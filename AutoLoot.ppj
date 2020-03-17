@@ -1,0 +1,38 @@
+<PapyrusProject
+	xmlns="PapyrusProject.xsd"
+	Game="FO4"
+	Flags="Institute_Papyrus_Flags.flg"
+	Output="@modpath\scripts"
+	Optimize="true" Release="true" Final="true" Anonymize="true" Package="true" Zip="true">
+	<Variables>
+		<Variable Name="modname" Value="Auto Loot"/>
+		<Variable Name="namespace" Value="AutoLoot"/>
+		<Variable Name="modpath" Value="E:\repos\mods\fallout4\@modname"/>
+	</Variables>
+	<Imports>
+		<Import>@modpath\scripts\Source\User</Import>
+		<Import>E:\SteamLibrary\Fallout 4\Data\Scripts\Source\Base</Import>
+	</Imports>
+	<Scripts>
+		<Script>@namespace\dubhAutoLootDummyScript.psc</Script>
+		<Script>@namespace\dubhAutoLootEffectBodiesScript.psc</Script>
+		<Script>@namespace\dubhAutoLootEffectComponentsScript.psc</Script>
+		<Script>@namespace\dubhAutoLootEffectContainersScript.psc</Script>
+		<Script>@namespace\dubhAutoLootEffectScript.psc</Script>
+		<Script>@namespace\dubhAutoLootEffectTieredScript.psc</Script>
+		<Script>@namespace\dubhAutoLootQuestScript.psc</Script>
+		<Script>@namespace\dubhAutoLootNoDisintegrateScript.psc</Script>
+	</Scripts>
+	<Folders>
+		<Folder NoRecurse="true">@namespace\Fragments\Terminals</Folder>
+	</Folders>
+	<Packages Output="@modpath">
+		<Package Name="@modname - Main" RootDir="@modpath">
+			<Include NoRecurse="false">**/*.pex</Include>
+		</Package>
+	</Packages>
+	<ZipFile Name="@modname" RootDir="@modpath" Output="@modpath" Compression="deflate">
+		<Include>@modpath\Auto Loot.esp</Include>
+		<Include>@modpath\Auto Loot - Main.ba2</Include>
+	</ZipFile>
+</PapyrusProject>
