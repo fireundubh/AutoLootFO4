@@ -240,7 +240,7 @@ Bool Function LootObjectByFilter(FormList akFilters, FormList akPerks, ObjectRef
 			bBreak = True
 		EndIf
 
-		If !bBreak
+		If !bBreak && i != 2  ; skip AutoLoot_Perk_Components/AutoLoot_Filter_Components
 			If PlayerRef.HasPerk(akPerks.GetAt(i) as Perk)
 				akContainer.RemoveItem(akFilters.GetAt(i) as FormList, -1, True, akOtherContainer)
 			EndIf
