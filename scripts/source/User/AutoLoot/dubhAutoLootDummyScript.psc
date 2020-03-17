@@ -1,0 +1,46 @@
+ScriptName AutoLoot:dubhAutoLootDummyScript Extends Actor
+
+; -----------------------------------------------------------------------------
+; EVENTS
+; -----------------------------------------------------------------------------
+
+Event OnInit()
+	AddInventoryEventFilter(None)
+EndEvent
+
+Event OnItemAdded(Form akBaseItem, Int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
+	ObjectReference kDestination = PlayerRef
+
+	If PlayerOnly.Value == 0
+		WorkshopScript kWorkshop = AutoLoot_Settlements.GetAt(Destination.Value as Int) as WorkshopScript
+		kDestination = kWorkshop
+	EndIf
+
+	Self.RemoveItem(akBaseItem, aiItemCount, Notifications.Value, kDestination)
+EndEvent
+
+; -----------------------------------------------------------------------------
+; FUNCTIONS
+; -----------------------------------------------------------------------------
+
+Function Log(String asFunction = "", String asMessage = "") DebugOnly
+	Debug.TraceSelf(Self, asFunction, asMessage)
+EndFunction
+
+; -----------------------------------------------------------------------------
+; PROPERTIES
+; -----------------------------------------------------------------------------
+
+Group Actors
+	Actor Property PlayerRef Auto Mandatory
+EndGroup
+
+Group Forms
+	FormList Property AutoLoot_Settlements Auto Mandatory
+EndGroup
+
+Group Globals
+	GlobalVariable Property Destination Auto Mandatory
+	GlobalVariable Property PlayerOnly Auto Mandatory
+	GlobalVariable Property Notifications Auto Mandatory
+EndGroup
