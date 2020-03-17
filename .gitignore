@@ -1,0 +1,10 @@
+.git/
+docs/
+optional/
+releases/
+tools/
+*.7z
+*.bak
+*.pex
+*.xlsx
+*.zip
