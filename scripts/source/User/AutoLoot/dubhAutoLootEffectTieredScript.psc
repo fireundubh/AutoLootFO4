@@ -52,7 +52,7 @@ EndFunction
 ; Return true if all conditions are met
 
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
-	If !(akItem.Is3DLoaded() && !akItem.IsDisabled() && !akItem.IsDeleted() && !akItem.IsDestroyed() && !akItem.IsActivationBlocked())
+	If !akItem.Is3DLoaded() || akItem.IsDisabled() || akItem.IsDeleted() || akItem.IsDestroyed() || akItem.IsActivationBlocked()
 		Return False
 	EndIf
 

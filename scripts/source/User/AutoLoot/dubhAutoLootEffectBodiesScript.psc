@@ -41,7 +41,7 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
 		Return False
 	EndIf
 
-	If !(akItem.Is3DLoaded() && !akItem.IsDisabled() && !akItem.IsDeleted() && !akItem.IsDestroyed() && !akItem.IsActivationBlocked())
+	If !akItem.Is3DLoaded() || akItem.IsDisabled() || akItem.IsDeleted() || akItem.IsDestroyed() || akItem.IsActivationBlocked()
 		Return False
 	EndIf
 
