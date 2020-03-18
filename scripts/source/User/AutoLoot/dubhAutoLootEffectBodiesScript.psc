@@ -136,15 +136,15 @@ Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectRefe
 	EndIf
 
 	; add only owned items when Auto Steal is enabled and mode is set to Owned Only
-  If AutoLoot_Setting_AllowStealing.Value == 1 && AutoLoot_Setting_LootOnlyOwned.Value == 1
-  	If PlayerRef.WouldBeStealing(akContainer)
-  		akArray.Add(akContainer, 1)
-  		Return
-  	EndIf
-  EndIf
-
+  If AutoLoot_Setting_AllowStealing.Value == 1
+  	If AutoLoot_Setting_LootOnlyOwned.Value == 1
+	  	If PlayerRef.WouldBeStealing(akContainer)
+	  		akArray.Add(akContainer, 1)
+	  		Return
+	  	EndIf
+	  EndIf
 	; add all items when Auto Steal is enabled and mode is set to Owned and Unowned
-	If AutoLoot_Setting_AllowStealing.Value == 1
+	Else
 		akArray.Add(akContainer, 1)
 		Return
 	EndIf
