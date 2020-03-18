@@ -34,26 +34,22 @@ Bool Function GameStateIsValid()
 	Return PlayerRef.HasPerk(ActivePerk) && !Utility.IsInMenuMode() && Game.IsMovementControlsEnabled() && !Game.IsVATSPlaybackActive()
 EndFunction
 
-; Returns true if loot in location can be processed
-
-Bool Function LocationCanBeLooted(ObjectReference akItem)
-	If AutoLoot_Setting_LootSettlements.Value == 1
-		Return True
-	EndIf
-
-	Return !AutoLoot_Locations.HasForm(akItem.GetCurrentLocation())
-EndFunction
-
 ; Return true if all conditions are met
 
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
-	If akItem.Is3DLoaded() && !akItem.IsDisabled() && !akItem.IsDeleted() && !akItem.IsDestroyed() && !akItem.IsActivationBlocked() && LocationCanBeLooted(akItem)
-		MiscObject akMisc = akItem.GetBaseObject() as MiscObject
-
-		Return ItemHasLootableComponent(akMisc)
+	If !(akItem.Is3DLoaded() && !akItem.IsDisabled() && !akItem.IsDeleted() && !akItem.IsDestroyed() && !akItem.IsActivationBlocked())
+		Return False
 	EndIf
 
-	Return False
+	If AutoLoot_Setting_LootSettlements.Value == 0
+		If Locations.HasForm(akItem.GetCurrentLocation())
+			Return False
+		EndIf
+	EndIf
+
+	MiscObject akMisc = akItem.GetBaseObject() as MiscObject
+
+	Return ItemHasLootableComponent(akMisc)
 EndFunction
 
 ; Build and process references
@@ -227,7 +223,7 @@ Group Forms
 	FormList Property QuestItems Auto Mandatory
 	FormList Property AutoLoot_Filter_Components Auto Mandatory
 	FormList Property AutoLoot_Globals_Components Auto Mandatory
-	FormList Property AutoLoot_Locations Auto Mandatory
+	FormList Property Locations Auto Mandatory
 EndGroup
 
 Group Globals

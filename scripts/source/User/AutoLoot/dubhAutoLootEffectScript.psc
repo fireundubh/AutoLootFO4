@@ -34,20 +34,20 @@ Bool Function GameStateIsValid()
 	Return PlayerRef.HasPerk(ActivePerk) && !Utility.IsInMenuMode() && Game.IsMovementControlsEnabled() && !Game.IsVATSPlaybackActive()
 EndFunction
 
-; Returns true if loot in location can be processed
-
-Bool Function LocationCanBeLooted(ObjectReference akItem)
-	If AutoLoot_Setting_LootSettlements.Value == 1
-		Return True
-	EndIf
-
-	Return !Locations.HasForm(akItem.GetCurrentLocation())
-EndFunction
-
 ; Return true if all conditions are met
 
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
-	Return akItem.Is3DLoaded() && !akItem.IsDisabled() && !akItem.IsDeleted() && !akItem.IsDestroyed() && LocationCanBeLooted(akItem)
+	If !(akItem.Is3DLoaded() && !akItem.IsDisabled() && !akItem.IsDeleted() && !akItem.IsDestroyed())
+		Return False
+	EndIf
+
+	If AutoLoot_Setting_LootSettlements.Value == 0
+		If Locations.HasForm(akItem.GetCurrentLocation())
+			Return False
+		EndIf
+	EndIf
+
+	Return True
 EndFunction
 
 ; Build and process references

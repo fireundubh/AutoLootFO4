@@ -34,16 +34,6 @@ Bool Function GameStateIsValid()
 	Return PlayerRef.HasPerk(ActivePerk) && !Utility.IsInMenuMode() && Game.IsMovementControlsEnabled() && !Game.IsVATSPlaybackActive()
 EndFunction
 
-; Returns true if loot in location can be processed
-
-Bool Function LocationCanBeLooted(ObjectReference akItem)
-	If AutoLoot_Setting_LootSettlements.Value == 1
-		Return True
-	EndIf
-
-	Return !AutoLoot_Locations.HasForm(akItem.GetCurrentLocation())
-EndFunction
-
 ; Return true if all conditions are met
 
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
@@ -51,7 +41,17 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
 		Return False
 	EndIf
 
-	Return akItem.Is3DLoaded() && !akItem.IsDisabled() && !akItem.IsDeleted() && !akItem.IsDestroyed() && !akItem.IsActivationBlocked() && LocationCanBeLooted(akItem)
+	If !(akItem.Is3DLoaded() && !akItem.IsDisabled() && !akItem.IsDeleted() && !akItem.IsDestroyed() && !akItem.IsActivationBlocked())
+		Return False
+	EndIf
+
+	If AutoLoot_Setting_LootSettlements.Value == 0
+		If Locations.HasForm(akItem.GetCurrentLocation())
+			Return False
+		EndIf
+	EndIf
+
+	Return True
 EndFunction
 
 ; Build and process references
@@ -220,7 +220,7 @@ Function LootObject(ObjectReference objLoot)
 	If AutoLoot_Setting_TakeAll.Value == 1
 		objLoot.RemoveAllItems(DummyActor, AutoLoot_Setting_StealingIsHostile.Value)
 	Else
-		LootObjectByFilter(FilterAll, AutoLoot_Perks, objLoot, DummyActor)
+		LootObjectByFilter(FilterAll, Perks, objLoot, DummyActor)
 		LootObjectByTieredFilter(AutoLoot_Perk_Components, AutoLoot_Filter_Components, AutoLoot_Globals_Components, objLoot, DummyActor)
 		LootObjectByTieredFilter(AutoLoot_Perk_Valuables, AutoLoot_Filter_Valuables, AutoLoot_Globals_Valuables, objLoot, DummyActor)
 		LootObjectByTieredFilter(AutoLoot_Perk_Weapons, AutoLoot_Filter_Weapons, AutoLoot_Globals_Weapons, objLoot, DummyActor)
@@ -309,8 +309,8 @@ Group Forms
 	FormList Property AutoLoot_Globals_Components Auto Mandatory
 	FormList Property AutoLoot_Globals_Valuables Auto Mandatory
 	FormList Property AutoLoot_Globals_Weapons Auto Mandatory
-	FormList Property AutoLoot_Locations Auto Mandatory
-	FormList Property AutoLoot_Perks Auto Mandatory
+	FormList Property Locations Auto Mandatory
+	FormList Property Perks Auto Mandatory
 EndGroup
 
 Group Globals
