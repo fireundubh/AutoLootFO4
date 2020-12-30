@@ -8,12 +8,14 @@
     <Variable Name="modname" Value="Auto Loot"/>
     <Variable Name="namespace" Value="AutoLoot"/>
     <Variable Name="modpath" Value="F:\repos\mods\fallout4\@modname"/>
+    <Variable Name="gamepath" Value="F:\SteamLibrary\steamapps\common\Fallout 4"/>
   </Variables>
   <Imports>
     <Import>@modpath\scripts\Source\User</Import>
-    <Import>E:\SteamLibrary\Fallout 4\Data\Scripts\Source\Base</Import>
+    <Import>@gamepath\Data\Scripts\Source\Base</Import>
   </Imports>
   <Scripts>
+    <Script>@namespace\dubhAutoLootUtilityScript.psc</Script>
     <Script>@namespace\dubhAutoLootDummyScript.psc</Script>
     <Script>@namespace\dubhAutoLootEffectBodiesScript.psc</Script>
     <Script>@namespace\dubhAutoLootEffectComponentsScript.psc</Script>

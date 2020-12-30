@@ -1,36 +1,37 @@
 ScriptName AutoLoot:dubhAutoLootEffectTieredScript Extends ActiveMagicEffect
 
+Import AutoLoot:dubhAutoLootUtilityScript
+
+
 ; -----------------------------------------------------------------------------
 ; EVENTS
 ; -----------------------------------------------------------------------------
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	StartTimer(Delay.Value as Int, TimerID)
+  StartTimer(Delay.GetValue() as Int, TimerID)
 EndEvent
 
 Event OnTimer(Int aiTimerID)
-	If PlayerRef.HasPerk(ActivePerk)
-		If GameStateIsValid()
-			Int i = 0
-			Bool bBreak = False
+  If PlayerRef.HasPerk(ActivePerk)
+    If IsPlayerControlled()
+      Int i = 0
+      Bool bContinue = True
 
-			While (i < Filter_Globals.GetSize()) && !bBreak
-				If !GameStateIsValid()
-					bBreak = True
-				EndIf
+      While (i < Filter_Globals.GetSize()) && bContinue
+        bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
-				If !bBreak
-					If (Filter_Globals.GetAt(i) as GlobalVariable).Value == 1
-						BuildAndProcessReferences(Filter.GetAt(i) as FormList)
-					EndIf
-				EndIf
+        If bContinue
+          If IntToBool(Filter_Globals.GetAt(i) as GlobalVariable)
+            BuildAndProcessReferences(Filter.GetAt(i) as FormList)
+          EndIf
+        EndIf
 
-				i += 1
-			EndWhile
-		EndIf
+        i += 1
+      EndWhile
+    EndIf
 
-		StartTimer(Delay.Value as Int, TimerID)
-	EndIf
+    StartTimer(Delay.GetValue() as Int, TimerID)
+  EndIf
 EndEvent
 
 ; -----------------------------------------------------------------------------
@@ -40,150 +41,125 @@ EndEvent
 ; Log
 
 Function Log(String asFunction = "", String asMessage = "") DebugOnly
-	Debug.TraceSelf(Self, asFunction, asMessage)
-EndFunction
-
-; Return true if any exit condition met
-
-Bool Function GameStateIsValid()
-	Return PlayerRef.HasPerk(ActivePerk) && !Utility.IsInMenuMode() && Game.IsMovementControlsEnabled() && !Game.IsVATSPlaybackActive()
+  Debug.TraceSelf(Self, asFunction, asMessage)
 EndFunction
 
 ; Return true if all conditions are met
 
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
-	If !akItem.Is3DLoaded() || akItem.IsDisabled() || akItem.IsDeleted() || akItem.IsDestroyed() || akItem.IsActivationBlocked()
-		Return False
-	EndIf
+  If !IsObjectInteractable(akItem)
+    Return False
+  EndIf
 
-	If AutoLoot_Setting_LootSettlements.Value == 0
-		If Locations.HasForm(akItem.GetCurrentLocation())
-			Return False
-		EndIf
-	EndIf
+  If !IntToBool(AutoLoot_Setting_LootSettlements)
+    If SafeHasForm(Locations, akItem.GetCurrentLocation())
+      Return False
+    EndIf
+  EndIf
 
-	Return True
+  Return True
 EndFunction
 
 ; Build and process references
 
 Function BuildAndProcessReferences(FormList akFilter)
-	ObjectReference[] LootArray = PlayerRef.FindAllReferencesOfType(akFilter, Radius.Value)
+  ObjectReference[] LootArray = PlayerRef.FindAllReferencesOfType(akFilter, Radius.GetValue())
 
-	If (LootArray == None) || (LootArray.Length == 0)
-		Return
-	EndIf
+  If (LootArray == None) || (LootArray.Length == 0)
+    Return
+  EndIf
 
-	LootArray = FilterLootArray(LootArray)
+  LootArray = FilterLootArray(LootArray)
 
-	If (LootArray == None) || (LootArray.Length == 0)
-		Return
-	EndIf
+  If (LootArray == None) || (LootArray.Length == 0)
+    Return
+  EndIf
 
-	Int i = 0
-	Bool bBreak = False
+  Int i = 0
+  Bool bContinue = True
 
-	While (i < LootArray.Length) && !bBreak
-		If !GameStateIsValid()
-			bBreak = True
-		EndIf
+  While (i < LootArray.Length) && bContinue
+    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
-		If !bBreak
-			ObjectReference objLoot = LootArray[i]
+    If bContinue
+      ObjectReference objLoot = LootArray[i]
 
-			If objLoot != None
-				LootObject(objLoot)
-			EndIf
-		EndIf
+      If objLoot != None
+        LootObject(objLoot)
+      EndIf
+    EndIf
 
-		i += 1
-	EndWhile
+    i += 1
+  EndWhile
 
-	If (LootArray == None) || (LootArray.Length == 0)
-		Return
-	EndIf
+  If (LootArray == None) || (LootArray.Length == 0)
+    Return
+  EndIf
 
-	LootArray.Clear()
+  LootArray.Clear()
 EndFunction
 
 ; Adds an object reference to the filtered loot array
 
 Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
-	; exclude quest items that are explicitly excluded
-	If QuestItems.GetSize() > 0
-		If QuestItems.HasForm(akContainer)
-			Return
-		EndIf
-	EndIf
+  ; exclude quest items that are explicitly excluded
+  If SafeHasForm(QuestItems, akContainer)
+    Return
+  EndIf
 
-	; add only owned items when Auto Steal is enabled and mode is set to Owned Only
-  If AutoLoot_Setting_AllowStealing.Value == 1
-  	If AutoLoot_Setting_LootOnlyOwned.Value == 1
-	  	If PlayerRef.WouldBeStealing(akContainer)
-	  		akArray.Add(akContainer, 1)
-	  		Return
-	  	EndIf
-	  EndIf
-	; add all items when Auto Steal is enabled and mode is set to Owned and Unowned
-	Else
-		akArray.Add(akContainer, 1)
-		Return
-	EndIf
+  Bool bAllowStealing = IntToBool(AutoLoot_Setting_AllowStealing)
+  Bool bLootOnlyOwned = IntToBool(AutoLoot_Setting_LootOnlyOwned)
 
-	If !PlayerRef.WouldBeStealing(akContainer)
-		akArray.Add(akContainer, 1)
-	EndIf
+  AddObjectToArray(akArray, akContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
 EndFunction
 
 ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
-	ObjectReference[] kResult = new ObjectReference[0]
+  ObjectReference[] kResult = new ObjectReference[0]
 
-	If akArray.Length > 0
-		Int i = 0
-		Bool bBreak = False
+  If akArray.Length == 0
+    Return kResult
+  EndIf
 
-		While (i < akArray.Length) && !bBreak
-			If kResult.Length >= 128
-				bBreak = True
-			EndIf
+  Int i = 0
+  Bool bContinue = True
 
-			If !bBreak && !GameStateIsValid()
-				bBreak = True
-			EndIf
+  While (i < akArray.Length) && bContinue
+    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
-			If !bBreak
-				ObjectReference kItem = akArray[i]
+    If bContinue
+      ObjectReference kItem = akArray[i]
 
-				If kItem
-					If ItemCanBeProcessed(kItem)
-						ObjectReference kContainer = kItem.GetContainer()
+      If kItem
+        If ItemCanBeProcessed(kItem)
+          ObjectReference kContainer = kItem.GetContainer()
 
-						If !kContainer && (kContainer != PlayerRef)
-							AddObjectToObjectReferenceArray(kItem, kResult)
-						EndIf
-					EndIf
-				EndIf
-			EndIf
+          If !kContainer && (kContainer != PlayerRef)
+            AddObjectToObjectReferenceArray(kItem, kResult)
+          EndIf
+        EndIf
+      EndIf
+    EndIf
 
-			i += 1
-		EndWhile
-	EndIf
+    i += 1
+  EndWhile
 
-	Return kResult
+  Return kResult
 EndFunction
 
 ; Loot Object
 
 Function LootObject(ObjectReference objLoot)
-	If (objLoot != None) && (DummyActor != None)
-		If (AutoLoot_Setting_AllowStealing.Value == 1) && (AutoLoot_Setting_StealingIsHostile.Value == 0)
-			If PlayerRef.WouldBeStealing(objLoot)
-				objLoot.SetActorRefOwner(PlayerRef)
-			EndIf
-		EndIf
+  If (objLoot == None) || (DummyActor == None)
+    Return
+  EndIf
 
-		objLoot.Activate(DummyActor, False)
-	EndIf
+  If IntToBool(AutoLoot_Setting_AllowStealing)
+    If !IntToBool(AutoLoot_Setting_StealingIsHostile) && PlayerRef.WouldBeStealing(objLoot)
+      objLoot.SetActorRefOwner(PlayerRef)
+    EndIf
+  EndIf
+
+  objLoot.Activate(DummyActor, False)
 EndFunction
 
 ; -----------------------------------------------------------------------------
@@ -191,31 +167,31 @@ EndFunction
 ; -----------------------------------------------------------------------------
 
 Group Actors
-	Actor Property PlayerRef Auto Mandatory
-	Actor Property DummyActor Auto Mandatory
+  Actor Property PlayerRef Auto Mandatory
+  Actor Property DummyActor Auto Mandatory
 EndGroup
 
 Group Forms
-	FormList Property Filter Auto Mandatory
-	FormList Property Filter_Globals Auto Mandatory
-	FormList Property QuestItems Auto Mandatory
-	FormList Property Locations Auto Mandatory
+  FormList Property Filter Auto Mandatory
+  FormList Property Filter_Globals Auto Mandatory
+  FormList Property QuestItems Auto Mandatory
+  FormList Property Locations Auto Mandatory
 EndGroup
 
 Group Globals
-	GlobalVariable Property Destination Auto Mandatory
-	GlobalVariable Property Delay Auto Mandatory
-	GlobalVariable Property Radius Auto Mandatory
-	GlobalVariable Property AutoLoot_Setting_AllowStealing Auto Mandatory
-	GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Mandatory
-	GlobalVariable Property AutoLoot_Setting_LootOnlyOwned Auto Mandatory
-	GlobalVariable Property AutoLoot_Setting_LootSettlements Auto Mandatory
+  GlobalVariable Property Destination Auto Mandatory
+  GlobalVariable Property Delay Auto Mandatory
+  GlobalVariable Property Radius Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_AllowStealing Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_LootOnlyOwned Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_LootSettlements Auto Mandatory
 EndGroup
 
 Group Timer
-	Int Property TimerID Auto Mandatory
+  Int Property TimerID Auto Mandatory
 EndGroup
 
 Group Perks
-	Perk Property ActivePerk Auto Mandatory
+  Perk Property ActivePerk Auto Mandatory
 EndGroup
