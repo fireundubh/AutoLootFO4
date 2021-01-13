@@ -79,12 +79,8 @@ Function LootObject(ObjectReference akObject)
     EndIf
   EndIf
 
-  If akObject.GetBaseObject() is Activator
-    Log("LootObject", "Trying to activate: " + akObject)
-    akObject.Activate(DummyActor, True)
-  Else
-    akObject.Activate(DummyActor, False)
-  EndIf
+  Bool bDefaultProcessingOnly = akObject.GetBaseObject() is Activator
+  akObject.Activate(DummyActor, bDefaultProcessingOnly)
 EndFunction
 
 Function TryLootObject(ObjectReference akObject)
