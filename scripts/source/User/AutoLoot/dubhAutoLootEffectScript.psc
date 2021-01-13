@@ -29,13 +29,9 @@ EndEvent
 ; FUNCTIONS
 ; -----------------------------------------------------------------------------
 
-; Log
-
 Function Log(String asFunction = "", String asMessage = "") DebugOnly
   Debug.TraceSelf(Self, asFunction, asMessage)
 EndFunction
-
-; Return true if all conditions are met
 
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
   If IsObjectInteractable(akItem)
@@ -50,8 +46,6 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
 
   Return False
 EndFunction
-
-; Build and process references
 
 Function BuildAndProcessReferences(FormList akFilter)
   ObjectReference[] LootArray = PlayerRef.FindAllReferencesOfType(akFilter, Radius.GetValue())
@@ -77,8 +71,6 @@ Function BuildAndProcessReferences(FormList akFilter)
     i += 1
   EndWhile
 EndFunction
-
-; Loot Object
 
 Function LootObject(ObjectReference objLoot)
   If bAllowStealing
