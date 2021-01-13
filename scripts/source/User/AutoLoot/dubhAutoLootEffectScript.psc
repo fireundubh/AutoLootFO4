@@ -78,55 +78,6 @@ Function BuildAndProcessReferences(FormList akFilter)
   EndWhile
 EndFunction
 
-; Adds an object reference to the filtered loot array
-
-;Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
-;  ; exclude quest items that are explicitly excluded
-;  If SafeHasForm(QuestItems, akContainer)
-;    Return
-;  EndIf
-;
-;  Bool bAllowStealing = IntToBool(AutoLoot_Setting_AllowStealing)
-;  Bool bLootOnlyOwned = IntToBool(AutoLoot_Setting_LootOnlyOwned)
-;
-;  AddObjectToArray(akArray, akContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
-;EndFunction
-
-;ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
-;  ObjectReference[] kResult = new ObjectReference[0]
-;
-;  If akArray.Length == 0
-;    Return kResult
-;  EndIf
-;
-;  Int i = 0
-;  Bool bContinue = True
-;
-;  While (i < akArray.Length) && bContinue
-;    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-;
-;    If bContinue
-;      ObjectReference kItem = akArray[i]
-;
-;      If kItem
-;        If ItemCanBeProcessed(kItem)
-;          Log("FilterLootArray", "Item can be processed: " + kItem)
-;          ObjectReference kContainer = kItem.GetContainer()
-;
-;          If !kContainer && (kContainer != PlayerRef)
-;            Log("FilterLootArray", "Trying to add item to array: " + kItem)
-;            AddObjectToObjectReferenceArray(kItem, kResult)
-;          EndIf
-;        EndIf
-;      EndIf
-;    EndIf
-;
-;    i += 1
-;  EndWhile
-;
-;  Return kResult
-;EndFunction
-
 ; Loot Object
 
 Function LootObject(ObjectReference objLoot)
