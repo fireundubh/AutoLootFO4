@@ -34,8 +34,8 @@ EndFunction
 ; Return true if all conditions are met
 
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
-  If !IsObjectInteractable(akItem)
-    Return False
+  If IsObjectInteractable(akItem)
+    Return True
   EndIf
 
   If !IntToBool(AutoLoot_Setting_LootSettlements)
@@ -44,7 +44,7 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
     EndIf
   EndIf
 
-  Return True
+  Return False
 EndFunction
 
 ; Build and process references
