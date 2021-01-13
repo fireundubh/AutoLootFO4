@@ -14,6 +14,10 @@ EndEvent
 Event OnTimer(Int aiTimerID)
   If PlayerRef.HasPerk(ActivePerk)
     If IsPlayerControlled()
+      bAllowStealing     = IntToBool(AutoLoot_Setting_AllowStealing)
+      bLootOnlyOwned     = IntToBool(AutoLoot_Setting_LootOnlyOwned)
+      bStealingIsHostile = IntToBool(AutoLoot_Setting_StealingIsHostile)
+
       BuildAndProcessReferences(Filter)
     EndIf
 
@@ -52,99 +56,82 @@ EndFunction
 Function BuildAndProcessReferences(FormList akFilter)
   ObjectReference[] LootArray = PlayerRef.FindAllReferencesOfType(akFilter, Radius.GetValue())
 
-  If (LootArray == None) || (LootArray.Length == 0)
-    Return
-  EndIf
-
-  LootArray = FilterLootArray(LootArray)
-
-  If (LootArray == None) || (LootArray.Length == 0)
-    Return
-  EndIf
-
   Int i = 0
-  Bool bContinue = True
 
-  While (i < LootArray.Length) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+  While i < LootArray.Length
+    If PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+      ObjectReference kObject = LootArray[i]
 
-    If bContinue
-      ObjectReference objLoot = LootArray[i]
+      If kObject && !SafeHasForm(QuestItems, kObject) && ItemCanBeProcessed(kObject)
+        ObjectReference kContainer = kObject.GetContainer()
 
-      If objLoot
-        Log("BuildAndProcessReferences", "Trying to loot: " + objLoot)
-        LootObject(objLoot)
+        If !kContainer && (kContainer != PlayerRef)
+          TryLootObject(kObject)
+        EndIf
       EndIf
+    Else
+      ; just try to start a new timer, no need to finish loop
+      Return
     EndIf
 
     i += 1
   EndWhile
-
-  If (LootArray == None) || (LootArray.Length == 0)
-    Return
-  EndIf
-
-  LootArray.Clear()
 EndFunction
 
 ; Adds an object reference to the filtered loot array
 
-Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
-  ; exclude quest items that are explicitly excluded
-  If SafeHasForm(QuestItems, akContainer)
-    Return
-  EndIf
+;Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
+;  ; exclude quest items that are explicitly excluded
+;  If SafeHasForm(QuestItems, akContainer)
+;    Return
+;  EndIf
+;
+;  Bool bAllowStealing = IntToBool(AutoLoot_Setting_AllowStealing)
+;  Bool bLootOnlyOwned = IntToBool(AutoLoot_Setting_LootOnlyOwned)
+;
+;  AddObjectToArray(akArray, akContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
+;EndFunction
 
-  Bool bAllowStealing = IntToBool(AutoLoot_Setting_AllowStealing)
-  Bool bLootOnlyOwned = IntToBool(AutoLoot_Setting_LootOnlyOwned)
-
-  AddObjectToArray(akArray, akContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
-EndFunction
-
-ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
-  ObjectReference[] kResult = new ObjectReference[0]
-
-  If akArray.Length == 0
-    Return kResult
-  EndIf
-
-  Int i = 0
-  Bool bContinue = True
-
-  While (i < akArray.Length) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-
-    If bContinue
-      ObjectReference kItem = akArray[i]
-
-      If kItem
-        If ItemCanBeProcessed(kItem)
-          Log("FilterLootArray", "Item can be processed: " + kItem)
-          ObjectReference kContainer = kItem.GetContainer()
-
-          If !kContainer && (kContainer != PlayerRef)
-            Log("FilterLootArray", "Trying to add item to array: " + kItem)
-            AddObjectToObjectReferenceArray(kItem, kResult)
-          EndIf
-        EndIf
-      EndIf
-    EndIf
-
-    i += 1
-  EndWhile
-
-  Return kResult
-EndFunction
+;ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
+;  ObjectReference[] kResult = new ObjectReference[0]
+;
+;  If akArray.Length == 0
+;    Return kResult
+;  EndIf
+;
+;  Int i = 0
+;  Bool bContinue = True
+;
+;  While (i < akArray.Length) && bContinue
+;    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+;
+;    If bContinue
+;      ObjectReference kItem = akArray[i]
+;
+;      If kItem
+;        If ItemCanBeProcessed(kItem)
+;          Log("FilterLootArray", "Item can be processed: " + kItem)
+;          ObjectReference kContainer = kItem.GetContainer()
+;
+;          If !kContainer && (kContainer != PlayerRef)
+;            Log("FilterLootArray", "Trying to add item to array: " + kItem)
+;            AddObjectToObjectReferenceArray(kItem, kResult)
+;          EndIf
+;        EndIf
+;      EndIf
+;    EndIf
+;
+;    i += 1
+;  EndWhile
+;
+;  Return kResult
+;EndFunction
 
 ; Loot Object
 
 Function LootObject(ObjectReference objLoot)
-  If (objLoot == None) || (DummyActor == None)
-    Return
-  EndIf
-
-  If IntToBool(AutoLoot_Setting_AllowStealing)
-    If !IntToBool(AutoLoot_Setting_StealingIsHostile) && PlayerRef.WouldBeStealing(objLoot)
+  If bAllowStealing
+    If !bStealingIsHostile && PlayerRef.WouldBeStealing(objLoot)
       objLoot.SetActorRefOwner(PlayerRef)
     EndIf
   EndIf
@@ -157,12 +144,44 @@ Function LootObject(ObjectReference objLoot)
   EndIf
 EndFunction
 
+Function TryLootObject(ObjectReference akObject)
+  ; add only owned items when Auto Steal is enabled and mode is set to Owned Only
+  If bAllowStealing
+    ; special logic for only owned option
+    If bLootOnlyOwned
+      ; loot only owned items
+      If PlayerRef.WouldBeStealing(akObject)
+        LootObject(akObject)
+        Return
+      Else
+        ; don't loot unowned items
+        Return
+      EndIf
+    EndIf
+
+    ; otherwise, add all items when Auto Steal is enabled and mode is set to Owned and Unowned
+    LootObject(akObject)
+    Return
+  EndIf
+
+  ; loot only unowned items because Allow Stealing is off
+  If !PlayerRef.WouldBeStealing(akObject)
+    LootObject(akObject)
+  EndIf
+EndFunction
+
+; -----------------------------------------------------------------------------
+; VARIABLES
+; -----------------------------------------------------------------------------
+
+Bool bAllowStealing     = False
+Bool bLootOnlyOwned     = False
+Bool bStealingIsHostile = False
 
 ; -----------------------------------------------------------------------------
 ; PROPERTIES
 ; -----------------------------------------------------------------------------
 
-; Actor
 Group Actors
   Actor Property PlayerRef Auto Mandatory
   Actor Property DummyActor Auto Mandatory
