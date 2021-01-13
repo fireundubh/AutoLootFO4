@@ -33,13 +33,13 @@ Function Log(String asFunction = "", String asMessage = "") DebugOnly
   Debug.TraceSelf(Self, asFunction, asMessage)
 EndFunction
 
-Bool Function ItemCanBeProcessed(ObjectReference akItem)
-  If IsObjectInteractable(akItem)
+Bool Function ItemCanBeProcessed(ObjectReference akObject)
+  If IsObjectInteractable(akObject)
     Return True
   EndIf
 
   If !IntToBool(AutoLoot_Setting_LootSettlements)
-    If SafeHasForm(Locations, akItem.GetCurrentLocation())
+    If SafeHasForm(Locations, akObject.GetCurrentLocation())
       Return False
     EndIf
   EndIf
@@ -72,18 +72,18 @@ Function BuildAndProcessReferences(FormList akFilter)
   EndWhile
 EndFunction
 
-Function LootObject(ObjectReference objLoot)
+Function LootObject(ObjectReference akObject)
   If bAllowStealing
-    If !bStealingIsHostile && PlayerRef.WouldBeStealing(objLoot)
-      objLoot.SetActorRefOwner(PlayerRef)
+    If !bStealingIsHostile && PlayerRef.WouldBeStealing(akObject)
+      akObject.SetActorRefOwner(PlayerRef)
     EndIf
   EndIf
 
-  If objLoot.GetBaseObject() is Activator
-    Log("LootObject", "Trying to activate: " + objLoot)
-    objLoot.Activate(DummyActor, True)
+  If akObject.GetBaseObject() is Activator
+    Log("LootObject", "Trying to activate: " + akObject)
+    akObject.Activate(DummyActor, True)
   Else
-    objLoot.Activate(DummyActor, False)
+    akObject.Activate(DummyActor, False)
   EndIf
 EndFunction
 
