@@ -56,10 +56,8 @@ Function BuildAndProcessReferences(FormList akFilter)
     If PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
       ObjectReference kObject = LootArray[i]
 
-      If kObject && !SafeHasForm(QuestItems, kObject) && ItemCanBeProcessed(kObject)
-        ObjectReference kContainer = kObject.GetContainer()
-
-        If !kContainer && (kContainer != PlayerRef)
+      If kObject && kObject.GetContainer() == None && !SafeHasForm(QuestItems, kObject)
+        If ItemCanBeProcessed(kObject)
           TryLootObject(kObject)
         EndIf
       EndIf
