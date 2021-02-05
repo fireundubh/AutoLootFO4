@@ -191,12 +191,25 @@ Function LootObject(ObjectReference objLoot)
   EndIf
 
   If IntToBool(AutoLoot_Setting_TakeAll)
-    objLoot.RemoveAllItems(DummyActor, bStealingIsHostile)
+    If IntToBool(AutoLoot_Setting_AllowStealing)
+      objLoot.RemoveAllItems(DummyActor, bStealingIsHostile)
+    Else
+      objLoot.RemoveAllItems(DummyActor, False)
+    EndIf
   Else
-    LootObjectByFilter(FilterAll, Perks, objLoot, DummyActor)
-    LootObjectByTieredFilter(AutoLoot_Perk_Components, AutoLoot_Filter_Components, AutoLoot_Globals_Components, objLoot, DummyActor)
-    LootObjectByTieredFilter(AutoLoot_Perk_Valuables, AutoLoot_Filter_Valuables, AutoLoot_Globals_Valuables, objLoot, DummyActor)
-    LootObjectByTieredFilter(AutoLoot_Perk_Weapons, AutoLoot_Filter_Weapons, AutoLoot_Globals_Weapons, objLoot, DummyActor)
+    LootObjectByFilter(objLoot, DummyActor)
+
+    If PlayerRef.HasPerk(AutoLoot_Perk_Components)
+      LootObjectByTieredFilter(AutoLoot_Perk_Components, AutoLoot_Filter_Components, AutoLoot_Globals_Components, objLoot, DummyActor)
+    EndIf
+
+    If PlayerRef.HasPerk(AutoLoot_Perk_Valuables)
+      LootObjectByTieredFilter(AutoLoot_Perk_Valuables, AutoLoot_Filter_Valuables, AutoLoot_Globals_Valuables, objLoot, DummyActor)
+    EndIf
+
+    If PlayerRef.HasPerk(AutoLoot_Perk_Weapons)
+      LootObjectByTieredFilter(AutoLoot_Perk_Weapons, AutoLoot_Filter_Weapons, AutoLoot_Globals_Weapons, objLoot, DummyActor)
+    EndIf
   EndIf
 
   TryToDisableBody(objLoot)
@@ -204,40 +217,26 @@ EndFunction
 
 ; Loot specific items using active filters - excludes bodies and containers filters
 
-Bool Function LootObjectByFilter(FormList akFilters, FormList akPerks, ObjectReference akContainer, ObjectReference akOtherContainer)
+Function LootObjectByFilter(ObjectReference akContainer, ObjectReference akOtherContainer)
   Int i = 0
-  Bool bContinue = True
 
-  While (i < akFilters.GetSize()) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-
-    If bContinue && i != 2  ; skip AutoLoot_Perk_Components/AutoLoot_Filter_Components
-      If PlayerRef.HasPerk(akPerks.GetAt(i) as Perk)
-        akContainer.RemoveItem(akFilters.GetAt(i) as FormList, -1, True, akOtherContainer)
-      EndIf
+  While i < Perks.Length
+    If PlayerRef.HasPerk(Perks[i])
+      akContainer.RemoveItem(Filters[i], -1, True, akOtherContainer)
     EndIf
 
     i += 1
   EndWhile
 EndFunction
 
-; Loot specific items using active special filters
+; Loot specific items using active tiered filters
 
 Function LootObjectByTieredFilter(Perk akPerk, FormList akFilter, FormList akGlobals, ObjectReference akContainer, ObjectReference akOtherContainer)
-  If !PlayerRef.HasPerk(akPerk)
-    Return
-  EndIf
-
   Int i = 0
-  Bool bContinue = True
 
-  While (i < akFilter.GetSize()) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-
-    If bContinue
-      If (akGlobals.GetAt(i) as GlobalVariable).GetValue() as Int == 1
-        akContainer.RemoveItem(akFilter.GetAt(i) as FormList, -1, True, akOtherContainer)
-      EndIf
+  While i < akFilter.GetSize()
+    If IntToBool(akGlobals.GetAt(i) as GlobalVariable)
+      akContainer.RemoveItem(akFilter.GetAt(i) as FormList, -1, True, akOtherContainer)
     EndIf
 
     i += 1
@@ -270,7 +269,7 @@ EndGroup
 
 Group Forms
   FormList Property Filter Auto Mandatory
-  FormList Property FilterAll Auto Mandatory
+  FormList Property Locations Auto Mandatory
   FormList Property QuestItems Auto Mandatory
   FormList Property AutoLoot_Filter_Components Auto Mandatory
   FormList Property AutoLoot_Filter_Valuables Auto Mandatory
@@ -278,8 +277,6 @@ Group Forms
   FormList Property AutoLoot_Globals_Components Auto Mandatory
   FormList Property AutoLoot_Globals_Valuables Auto Mandatory
   FormList Property AutoLoot_Globals_Weapons Auto Mandatory
-  FormList Property Locations Auto Mandatory
-  FormList Property Perks Auto Mandatory
 EndGroup
 
 Group Globals
@@ -304,4 +301,9 @@ Group Perks
   Perk Property AutoLoot_Perk_Components Auto Mandatory
   Perk Property AutoLoot_Perk_Valuables Auto Mandatory
   Perk Property AutoLoot_Perk_Weapons Auto Mandatory
+EndGroup
+
+Group Func_LootObjectByFilter
+  FormList[] Property Filters Auto Mandatory  ; untiered filter formlists only
+  Perk[] Property Perks Auto Mandatory        ; untiered filter perks only
 EndGroup
