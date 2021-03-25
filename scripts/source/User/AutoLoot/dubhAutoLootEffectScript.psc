@@ -33,18 +33,18 @@ Function Log(String asFunction = "", String asMessage = "") DebugOnly
   Debug.TraceSelf(Self, asFunction, asMessage)
 EndFunction
 
-Bool Function ItemCanBeProcessed(ObjectReference akObject)
-  If IsObjectInteractable(akObject)
-    Return True
+Bool Function ItemCanBeProcessed(ObjectReference akItem)
+  If !IsObjectInteractable(akItem)
+    Return False
   EndIf
 
   If !IntToBool(AutoLoot_Setting_LootSettlements)
-    If SafeHasForm(Locations, akObject.GetCurrentLocation())
+    If SafeHasForm(Locations, akItem.GetCurrentLocation())
       Return False
     EndIf
   EndIf
 
-  Return False
+  Return True
 EndFunction
 
 Function BuildAndProcessReferences(FormList akFilter)
