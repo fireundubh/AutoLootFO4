@@ -27,8 +27,21 @@ EndEvent
 
 ; Log
 
-Function Log(String asFunction = "", String asMessage = "") DebugOnly
-  Debug.TraceSelf(Self, asFunction, asMessage)
+Function _Log(String asTextToPrint, Int aiSeverity = 0) DebugOnly
+  Debug.OpenUserLog("AutoLoot")
+  Debug.TraceUser("AutoLoot", "dubhAutoLootEffectContainersScript> " + asTextToPrint, aiSeverity)
+EndFunction
+
+Function LogInfo(String asTextToPrint) DebugOnly
+  _Log("[INFO] " + asTextToPrint, 0)
+EndFunction
+
+Function LogWarning(String asTextToPrint) DebugOnly
+  _Log("[WARN] " + asTextToPrint, 1)
+EndFunction
+
+Function LogError(String asTextToPrint) DebugOnly
+  _Log("[ERRO] " + asTextToPrint, 2)
 EndFunction
 
 ; Return true if all conditions are met
