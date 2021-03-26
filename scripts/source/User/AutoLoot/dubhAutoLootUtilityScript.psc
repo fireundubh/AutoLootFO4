@@ -17,6 +17,10 @@ EndFunction
 
 
 Bool Function SafeHasForm(FormList akFormList, Form akForm) Global
+  If akForm is Actor
+    akForm = (akForm as Actor).GetLeveledActorBase() as Form
+  EndIf
+
   Return akFormList.GetSize() > 0 && akFormList.HasForm(akForm)
 EndFunction
 
