@@ -25,8 +25,6 @@ EndEvent
 ; FUNCTIONS
 ; -----------------------------------------------------------------------------
 
-; Log
-
 Function _Log(String asTextToPrint, Int aiSeverity = 0) DebugOnly
   Debug.OpenUserLog("AutoLoot")
   Debug.TraceUser("AutoLoot", "dubhAutoLootEffectContainersScript> " + asTextToPrint, aiSeverity)
@@ -44,8 +42,6 @@ Function LogError(String asTextToPrint) DebugOnly
   _Log("[ERRO] " + asTextToPrint, 2)
 EndFunction
 
-; Return true if all conditions are met
-
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
   If !IsObjectInteractable(akItem)
     Return False
@@ -59,8 +55,6 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
 
   Return True
 EndFunction
-
-; Build and process references
 
 Function BuildAndProcessReferences(FormList akFilter)
   ObjectReference[] LootArray = PlayerRef.FindAllReferencesOfType(akFilter, Radius.GetValue())
@@ -99,8 +93,6 @@ Function BuildAndProcessReferences(FormList akFilter)
   LootArray.Clear()
 EndFunction
 
-; Adds an object reference to the filtered loot array
-
 Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
   ; exclude empty containers
   If akContainer.GetItemCount(None) == 0
@@ -126,8 +118,6 @@ Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectRefe
 
   AddObjectToArray(akArray, akContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
 EndFunction
-
-; Filters the loot array for valid items
 
 ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
   ObjectReference[] kResult = new ObjectReference[0]
@@ -157,8 +147,6 @@ ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
 
   Return kResult
 EndFunction
-
-; Loot Object
 
 Function LootObject(ObjectReference objLoot)
   If (objLoot == None) || (DummyActor == None)
@@ -202,8 +190,6 @@ Function LootObject(ObjectReference objLoot)
   EndIf
 EndFunction
 
-; Loot specific items using active filters - excludes bodies and containers filters
-
 Function LootObjectByFilter(ObjectReference akContainer, ObjectReference akOtherContainer)
   Int i = 0
 
@@ -215,8 +201,6 @@ Function LootObjectByFilter(ObjectReference akContainer, ObjectReference akOther
     i += 1
   EndWhile
 EndFunction
-
-; Loot specific items using active tiered filters
 
 Function LootObjectByTieredFilter(Perk akPerk, FormList akFilter, FormList akGlobals, ObjectReference akContainer, ObjectReference akOtherContainer)
   Int i = 0
@@ -230,13 +214,9 @@ Function LootObjectByTieredFilter(Perk akPerk, FormList akFilter, FormList akGlo
   EndWhile
 EndFunction
 
-; Check if player has a lockpicking perk - uses formlist to support other mods
-
 Bool Function PlayerCanPickLock()
   Return PlayerRef.HasPerk(Locksmith01) || PlayerRef.HasPerk(Locksmith02) || PlayerRef.HasPerk(Locksmith03) || PlayerRef.HasPerk(Locksmith04)
 EndFunction
-
-; Unlock and reward XP based on lock level
 
 Bool Function TryToUnlockForXP(ObjectReference objContainer)
   Int iXPReward = 0

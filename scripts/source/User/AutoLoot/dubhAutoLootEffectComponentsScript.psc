@@ -25,8 +25,6 @@ EndEvent
 ; FUNCTIONS
 ; -----------------------------------------------------------------------------
 
-; Log
-
 Function _Log(String asTextToPrint, Int aiSeverity = 0) DebugOnly
   Debug.OpenUserLog("AutoLoot")
   Debug.TraceUser("AutoLoot", "dubhAutoLootEffectComponentsScript> " + asTextToPrint, aiSeverity)
@@ -44,8 +42,6 @@ Function LogError(String asTextToPrint) DebugOnly
   _Log("[ERRO] " + asTextToPrint, 2)
 EndFunction
 
-; Return true if all conditions are met
-
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
   If !IsObjectInteractable(akItem)
     Return False
@@ -61,8 +57,6 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
 
   Return ItemHasLootableComponent(akMisc)
 EndFunction
-
-; Build and process references
 
 Function BuildAndProcessReferences(FormList akFilter)
   ObjectReference[] LootArray = PlayerRef.FindAllReferencesOfType(akFilter, Radius.GetValue())
@@ -100,8 +94,6 @@ Function BuildAndProcessReferences(FormList akFilter)
 
   LootArray.Clear()
 EndFunction
-
-; Adds an object reference to the filtered loot array
 
 Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
   ; exclude quest items that are explicitly excluded
@@ -148,8 +140,6 @@ ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
   Return kResult
 EndFunction
 
-; Returns item if item has a lootable component, or None if not
-
 Bool Function ItemHasLootableComponent(MiscObject akItem)
   Int i = 0
   Bool bContinue = True
@@ -174,8 +164,6 @@ Bool Function ItemHasLootableComponent(MiscObject akItem)
 
   Return False
 EndFunction
-
-; Loot Object
 
 Function LootObject(ObjectReference objLoot)
   If (objLoot == None) || (DummyActor == None)

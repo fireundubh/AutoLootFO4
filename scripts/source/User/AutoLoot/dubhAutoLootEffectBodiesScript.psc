@@ -25,8 +25,6 @@ EndEvent
 ; FUNCTIONS
 ; -----------------------------------------------------------------------------
 
-; Log
-
 Function _Log(String asTextToPrint, Int aiSeverity = 0) DebugOnly
   Debug.OpenUserLog("AutoLoot")
   Debug.TraceUser("AutoLoot", "dubhAutoLootEffectBodiesScript> " + asTextToPrint, aiSeverity)
@@ -43,8 +41,6 @@ EndFunction
 Function LogError(String asTextToPrint) DebugOnly
   _Log("[ERRO] " + asTextToPrint, 2)
 EndFunction
-
-; Return true if all conditions are met
 
 Bool Function ItemCanBeProcessed(ObjectReference akItem)
   If !(akItem is Actor)
@@ -63,8 +59,6 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
 
   Return True
 EndFunction
-
-; Build and process references
 
 Function BuildAndProcessReferences(FormList akFilter)
   ObjectReference[] LootArray = None
@@ -97,8 +91,6 @@ Function BuildAndProcessReferences(FormList akFilter)
   LootArray.Clear()
 EndFunction
 
-; Iterate and Loot
-
 Function Loot(ObjectReference[] akLootArray)
   If akLootArray.Length == 0
     Return
@@ -123,8 +115,6 @@ Function Loot(ObjectReference[] akLootArray)
 
   akLootArray.Clear()
 EndFunction
-
-; Adds an object reference to the filtered loot array
 
 Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
   ; exclude empty containers
@@ -188,8 +178,6 @@ ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
   Return kResult
 EndFunction
 
-; Loot Object
-
 Function LootObject(ObjectReference objLoot)
   If (objLoot == None) || (DummyActor == None)
     Return
@@ -228,8 +216,6 @@ Function LootObject(ObjectReference objLoot)
   TryToDisableBody(objLoot)
 EndFunction
 
-; Loot specific items using active filters - excludes bodies and containers filters
-
 Function LootObjectByFilter(ObjectReference akContainer, ObjectReference akOtherContainer)
   Int i = 0
 
@@ -242,8 +228,6 @@ Function LootObjectByFilter(ObjectReference akContainer, ObjectReference akOther
   EndWhile
 EndFunction
 
-; Loot specific items using active tiered filters
-
 Function LootObjectByTieredFilter(Perk akPerk, FormList akFilter, FormList akGlobals, ObjectReference akContainer, ObjectReference akOtherContainer)
   Int i = 0
 
@@ -255,8 +239,6 @@ Function LootObjectByTieredFilter(Perk akPerk, FormList akFilter, FormList akGlo
     i += 1
   EndWhile
 EndFunction
-
-; Disables the container when container is empty
 
 Function TryToDisableBody(ObjectReference akContainer)
   If !IntToBool(AutoLoot_Setting_RemoveBodiesOnLoot)
