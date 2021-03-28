@@ -1,5 +1,7 @@
 ScriptName AutoLoot:dubhAutoLootNoDisintegrateScript Extends ActiveMagicEffect
 
+Import AutoLoot:dubhAutoLootUtilityScript
+
 ; -----------------------------------------------------------------------------
 ; EVENTS
 ; -----------------------------------------------------------------------------
@@ -10,11 +12,11 @@ EndEvent
 
 Event OnTimer(Int aiTimerID)
 	If PlayerRef.HasPerk(ActivePerk)
-		If GameStateIsValid()
-			BuildAndProcessReferences(Filter)
-		EndIf
+	  If IsPlayerControlled()
+		  BuildAndProcessReferences(Filter)
+	  EndIf
 
-		StartTimer(0, TimerID)
+	  StartTimer(0, TimerID)
 	EndIf
 EndEvent
 
@@ -22,68 +24,42 @@ EndEvent
 ; FUNCTIONS
 ; -----------------------------------------------------------------------------
 
-; Log
-
-Function Log(String asFunction = "", String asMessage = "") DebugOnly
-	Debug.TraceSelf(Self, asFunction, asMessage)
-EndFunction
-
-; Return true if any exit condition met
-
-Bool Function GameStateIsValid()
-	Return PlayerRef.HasPerk(ActivePerk) && !Utility.IsInMenuMode() && Game.IsMovementControlsEnabled() && !Game.IsVATSPlaybackActive()
-EndFunction
-
-; Build and process references
-
-Function BuildAndProcessReferences(FormList akKeywords)
-	ObjectReference[] ActorArray = None
+Function BuildAndProcessReferences(FormList AKeywords)
+	ObjectReference[] Actors = None
 
 	Int i = 0
-	Bool bBreak = False
+	Bool bContinue = True
 
-	While (i < akKeywords.GetSize()) && !bBreak
-		If !GameStateIsValid()
-			bBreak = True
-		EndIf
+	While (i < AKeywords.GetSize()) && bContinue
+	  bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
-		If !bBreak
-			ActorArray = PlayerRef.FindAllReferencesWithKeyword(akKeywords.GetAt(i), 4096.0)
+		If bContinue
+			Actors = PlayerRef.FindAllReferencesWithKeyword(AKeywords.GetAt(i), 4096.0)
 
-			If ActorArray && ActorArray.Length > 0
-				AddKeywordToActorsInArray(NoDisintegrate, ActorArray)
+			If Actors && Actors.Length > 0
+				AddKeywordToActorsInArray(NoDisintegrate, Actors)
 			EndIf
 		EndIf
 
 		i += 1
 	EndWhile
-
-	If (ActorArray == None) || (ActorArray.Length == 0)
-		Return
-	EndIf
-
-	ActorArray.Clear()
 EndFunction
 
-; Add a keyword to all valid actors in the array
-
-Function AddKeywordToActorsInArray(Keyword akKeyword, ObjectReference[] akArray)
+Function AddKeywordToActorsInArray(Keyword AKeyword, ObjectReference[] AActors)
 	Int i = 0
-	Bool bBreak = False
+	Bool bContinue = True
 
-	While (i < akArray.Length) && !bBreak
-		If !GameStateIsValid()
-			bBreak = True
-		EndIf
+	While (i < AActors.Length) && bContinue
+		bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
-		If !bBreak
-			ObjectReference kActor = akArray[i]
+		If bContinue
+			ObjectReference NPC = AActors[i] as ObjectReference
 
-			If kActor && (kActor != PlayerRef)
-				Actor kActorRef = kActor as Actor
+			If NPC && (NPC != PlayerRef)
+				Actor ActorRef = NPC as Actor
 
-				If !kActorRef.IsEssential() && !(kActorRef.GetBaseObject() as ActorBase).IsProtected() && !kActorRef.HasKeyword(akKeyword)
-					kActorRef.AddKeyword(akKeyword)
+				If !ActorRef.IsEssential() && !(ActorRef.GetBaseObject() as ActorBase).IsProtected() && !ActorRef.HasKeyword(AKeyword)
+					ActorRef.AddKeyword(AKeyword)
 				EndIf
 			EndIf
 		EndIf
