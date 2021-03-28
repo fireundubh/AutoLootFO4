@@ -25,110 +25,104 @@ EndEvent
 ; FUNCTIONS
 ; -----------------------------------------------------------------------------
 
-Function _Log(String asTextToPrint, Int aiSeverity = 0) DebugOnly
+Function _Log(String AText, Int ASeverity = 0) DebugOnly
   Debug.OpenUserLog("AutoLoot")
-  Debug.TraceUser("AutoLoot", "dubhAutoLootEffectComponentsScript> " + asTextToPrint, aiSeverity)
+  Debug.TraceUser("AutoLoot", "dubhAutoLootEffectComponentsScript> " + AText, ASeverity)
 EndFunction
 
-Function LogInfo(String asTextToPrint) DebugOnly
-  _Log("[INFO] " + asTextToPrint, 0)
+Function LogInfo(String AText) DebugOnly
+  _Log("[INFO] " + AText, 0)
 EndFunction
 
-Function LogWarning(String asTextToPrint) DebugOnly
-  _Log("[WARN] " + asTextToPrint, 1)
+Function LogWarning(String AText) DebugOnly
+  _Log("[WARN] " + AText, 1)
 EndFunction
 
-Function LogError(String asTextToPrint) DebugOnly
-  _Log("[ERRO] " + asTextToPrint, 2)
+Function LogError(String AText) DebugOnly
+  _Log("[ERRO] " + AText, 2)
 EndFunction
 
-Bool Function ItemCanBeProcessed(ObjectReference akItem)
-  If !IsObjectInteractable(akItem)
+Bool Function ItemCanBeProcessed(ObjectReference AObject)
+  If !IsObjectInteractable(AObject)
     Return False
   EndIf
 
   If !IntToBool(AutoLoot_Setting_LootSettlements)
-    If SafeHasForm(Locations, akItem.GetCurrentLocation())
+    If SafeHasForm(Locations, AObject.GetCurrentLocation())
       Return False
     EndIf
   EndIf
 
-  MiscObject akMisc = akItem.GetBaseObject() as MiscObject
+  MiscObject Item = AObject.GetBaseObject() as MiscObject
 
-  Return ItemHasLootableComponent(akMisc)
+  Return ItemHasLootableComponent(Item)
 EndFunction
 
-Function BuildAndProcessReferences(FormList akFilter)
-  ObjectReference[] LootArray = PlayerRef.FindAllReferencesOfType(akFilter, Radius.GetValue())
+Function BuildAndProcessReferences(FormList AFilter)
+  ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
 
-  If (LootArray == None) || (LootArray.Length == 0)
+  If Loot.Length == 0
     Return
   EndIf
 
-  LootArray = FilterLootArray(LootArray)
+  Loot = FilterLootArray(Loot)
 
-  If (LootArray == None) || (LootArray.Length == 0)
+  If Loot.Length == 0
     Return
   EndIf
 
   Int i = 0
-  Bool bContinue = True
 
-  While (i < LootArray.Length) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+  While i < Loot.Length
+    If PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+      ObjectReference Item = Loot[i] as ObjectReference
 
-    If bContinue
-      ObjectReference objLoot = LootArray[i]
-
-      If objLoot
-        LootObject(objLoot)
+      If Item
+        LootObject(Item)
       EndIf
+    Else
+      ; just try to start a new timer, no need to finish loop
+      Return
     EndIf
 
     i += 1
   EndWhile
-
-  If (LootArray == None) || (LootArray.Length == 0)
-    Return
-  EndIf
-
-  LootArray.Clear()
 EndFunction
 
-Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
+Function AddObjectToObjectReferenceArray(ObjectReference AContainer, ObjectReference[] ALoot)
   ; exclude quest items that are explicitly excluded
-  If SafeHasForm(QuestItems, akContainer)
+  If SafeHasForm(QuestItems, AContainer)
     Return
   EndIf
 
   Bool bAllowStealing = IntToBool(AutoLoot_Setting_AllowStealing)
   Bool bLootOnlyOwned = IntToBool(AutoLoot_Setting_LootOnlyOwned)
 
-  AddObjectToArray(akArray, akContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
+  AddObjectToArray(ALoot, AContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
 EndFunction
 
-ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
-  ObjectReference[] kResult = new ObjectReference[0]
+ObjectReference[] Function FilterLootArray(ObjectReference[] ALoot)
+  ObjectReference[] Result = new ObjectReference[0]
 
-  If akArray.Length == 0
-    Return kResult
+  If ALoot.Length == 0
+    Return Result
   EndIf
 
   Int i = 0
   Bool bContinue = True
 
-  While (i < akArray.Length) && bContinue
-    bContinue = kResult.Length <= 128 && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+  While (i < ALoot.Length) && bContinue
+    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
     If bContinue
-      ObjectReference kItem = akArray[i]
+      ObjectReference Item = ALoot[i]
 
-      If kItem
-        If ItemCanBeProcessed(kItem)
-          ObjectReference kContainer = kItem.GetContainer()
+      If Item
+        If ItemCanBeProcessed(Item)
+          ObjectReference ItemContainer = Item.GetContainer()
 
-          If !kContainer && (kContainer != PlayerRef)
-            AddObjectToObjectReferenceArray(kItem, kResult)
+          If !ItemContainer && (ItemContainer != PlayerRef)
+            AddObjectToObjectReferenceArray(Item, Result)
           EndIf
         EndIf
       EndIf
@@ -137,10 +131,10 @@ ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
     i += 1
   EndWhile
 
-  Return kResult
+  Return Result
 EndFunction
 
-Bool Function ItemHasLootableComponent(MiscObject akItem)
+Bool Function ItemHasLootableComponent(MiscObject AObject)
   Int i = 0
   Bool bContinue = True
 
@@ -151,9 +145,9 @@ Bool Function ItemHasLootableComponent(MiscObject akItem)
     If bContinue
       ; If the component is preferred, and akItem has that component, return True
       If IntToBool(AutoLoot_Globals_Components.GetAt(i) as GlobalVariable)
-        Component cmpo = AutoLoot_Filter_Components.GetAt(i) as Component
+        Component Item = AutoLoot_Filter_Components.GetAt(i) as Component
 
-        If akItem.GetObjectComponentCount(cmpo) > 0
+        If AObject.GetObjectComponentCount(Item) > 0
           Return True
         EndIf
       EndIf
@@ -165,18 +159,18 @@ Bool Function ItemHasLootableComponent(MiscObject akItem)
   Return False
 EndFunction
 
-Function LootObject(ObjectReference objLoot)
-  If (objLoot == None) || (DummyActor == None)
+Function LootObject(ObjectReference AObject)
+  If (AObject == None) || (DummyActor == None)
     Return
   EndIf
 
   If IntToBool(AutoLoot_Setting_AllowStealing)
-    If !IntToBool(AutoLoot_Setting_StealingIsHostile) && PlayerRef.WouldBeStealing(objLoot)
-      objLoot.SetActorRefOwner(PlayerRef)
+    If !IntToBool(AutoLoot_Setting_StealingIsHostile) && PlayerRef.WouldBeStealing(AObject)
+      AObject.SetActorRefOwner(PlayerRef)
     EndIf
   EndIf
 
-  objLoot.Activate(DummyActor, False)
+  AObject.Activate(DummyActor, False)
 EndFunction
 
 ; -----------------------------------------------------------------------------
