@@ -20,14 +20,6 @@ Event OnItemAdded(Form akBaseItem, Int aiItemCount, ObjectReference akItemRefere
 EndEvent
 
 ; -----------------------------------------------------------------------------
-; FUNCTIONS
-; -----------------------------------------------------------------------------
-
-Function Log(String asFunction = "", String asMessage = "") DebugOnly
-	Debug.TraceSelf(Self, asFunction, asMessage)
-EndFunction
-
-; -----------------------------------------------------------------------------
 ; PROPERTIES
 ; -----------------------------------------------------------------------------
 
