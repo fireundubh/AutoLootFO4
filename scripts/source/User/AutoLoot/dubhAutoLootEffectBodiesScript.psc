@@ -25,34 +25,34 @@ EndEvent
 ; FUNCTIONS
 ; -----------------------------------------------------------------------------
 
-Function _Log(String asTextToPrint, Int aiSeverity = 0) DebugOnly
+Function _Log(String AText, Int ASeverity = 0) DebugOnly
   Debug.OpenUserLog("AutoLoot")
-  Debug.TraceUser("AutoLoot", "dubhAutoLootEffectBodiesScript> " + asTextToPrint, aiSeverity)
+  Debug.TraceUser("AutoLoot", "dubhAutoLootEffectBodiesScript> " + AText, ASeverity)
 EndFunction
 
-Function LogInfo(String asTextToPrint) DebugOnly
-  _Log("[INFO] " + asTextToPrint, 0)
+Function LogInfo(String AText) DebugOnly
+  _Log("[INFO] " + AText, 0)
 EndFunction
 
-Function LogWarning(String asTextToPrint) DebugOnly
-  _Log("[WARN] " + asTextToPrint, 1)
+Function LogWarning(String AText) DebugOnly
+  _Log("[WARN] " + AText, 1)
 EndFunction
 
-Function LogError(String asTextToPrint) DebugOnly
-  _Log("[ERRO] " + asTextToPrint, 2)
+Function LogError(String AText) DebugOnly
+  _Log("[ERRO] " + AText, 2)
 EndFunction
 
-Bool Function ItemCanBeProcessed(ObjectReference akItem)
-  If !(akItem is Actor)
+Bool Function ItemCanBeProcessed(ObjectReference AObject)
+  If !(AObject is Actor)
     Return False
   EndIf
 
-  If !IsObjectInteractable(akItem)
+  If !IsObjectInteractable(AObject)
     Return False
   EndIf
 
   If !IntToBool(AutoLoot_Setting_LootSettlements)
-    If SafeHasForm(Locations, akItem.GetCurrentLocation())
+    If SafeHasForm(Locations, AObject.GetCurrentLocation())
       Return False
     EndIf
   EndIf
@@ -60,111 +60,102 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
   Return True
 EndFunction
 
-Function BuildAndProcessReferences(FormList akFilter)
-  ObjectReference[] LootArray = None
+Function BuildAndProcessReferences(FormList AFilter)
+  ObjectReference[] Loot = new ObjectReference[0]
 
+  Int i = 0
+
+  While i < AFilter.GetSize()
+    If PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+      Loot = PlayerRef.FindAllReferencesWithKeyword(AFilter.GetAt(i), Radius.GetValue())
+
+      If Loot.Length > 0
+        Loot = FilterLootArray(Loot)
+      EndIf
+
+      If Loot.Length > 0
+        TryLootObjects(Loot)  ; `Loot` will be cleared!
+      EndIf
+    Else
+      ; just try to start a new timer, no need to finish loop
+      Return
+    EndIf
+
+    i += 1
+  EndWhile
+EndFunction
+
+Function TryLootObjects(ObjectReference[] ALoot)
   Int i = 0
   Bool bContinue = True
 
-  While (i < akFilter.GetSize()) && bContinue
+  While (i < ALoot.Length) && bContinue
     bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
     If bContinue
-      LootArray = PlayerRef.FindAllReferencesWithKeyword(akFilter.GetAt(i), Radius.GetValue())
+      ObjectReference Item = ALoot[i] as ObjectReference
 
-      If LootArray != None && LootArray.Length > 0
-        LootArray = FilterLootArray(LootArray)
-      EndIf
-
-      If LootArray != None && LootArray.Length > 0
-        Loot(LootArray)
+      If Item
+        LootObject(Item)
       EndIf
     EndIf
 
     i += 1
   EndWhile
 
-  If (LootArray == None) || (LootArray.Length == 0)
-    Return
-  EndIf
-
-  LootArray.Clear()
+  ALoot.Clear()
 EndFunction
 
-Function Loot(ObjectReference[] akLootArray)
-  If akLootArray.Length == 0
-    Return
-  EndIf
-
-  Int i = 0
-  Bool bContinue = True
-
-  While (i < akLootArray.Length) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-
-    If bContinue
-      ObjectReference objLoot = akLootArray[i]
-
-      If objLoot
-        LootObject(objLoot)
-      EndIf
-    EndIf
-
-    i += 1
-  EndWhile
-
-  akLootArray.Clear()
-EndFunction
-
-Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
+Function AddObjectToObjectReferenceArray(ObjectReference AContainer, ObjectReference[] ALoot)
   ; exclude empty containers
-  If akContainer is Actor
-    If akContainer.GetItemCount(None) == 0
+  If AContainer is Actor
+    ; note: GetItemCount(None) counts non-playable items so we need to account for non-playable items
+    If (AContainer.GetItemCount(None) - AContainer.GetItemCount(NonPlayableItems)) <= 0
       Return
     EndIf
   EndIf
 
   ; exclude quest items that are explicitly excluded
-  If SafeHasForm(QuestItems, akContainer)
+  If SafeHasForm(QuestItems, AContainer)
     Return
   EndIf
 
   Bool bAllowStealing = IntToBool(AutoLoot_Setting_AllowStealing)
   Bool bLootOnlyOwned = IntToBool(AutoLoot_Setting_LootOnlyOwned)
 
-  AddObjectToArray(akArray, akContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
+  AddObjectToArray(ALoot, AContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
 EndFunction
 
-ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
-  ObjectReference[] kResult = new ObjectReference[0]
+ObjectReference[] Function FilterLootArray(ObjectReference[] ALoot)
+  ObjectReference[] Result = new ObjectReference[0]
 
-  If akArray.Length == 0
-    Return kResult
+  If ALoot.Length == 0
+    Return Result
   EndIf
 
   Int i = 0
   Bool bContinue = True
 
-  While (i < akArray.Length) && bContinue
+  While (i < ALoot.Length) && bContinue
     bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
     If bContinue
-      ObjectReference kItem = akArray[i]
+      ObjectReference Item = ALoot[i]
 
-      If kItem
-        If ItemCanBeProcessed(kItem)
-          Actor kActor = kItem as Actor
+      If Item
+        If ItemCanBeProcessed(Item)
+          Actor NPC = Item as Actor
 
-          If kActor && (kActor != PlayerRef)
-            If kActor.IsDead()
+          If NPC && (NPC != PlayerRef)
+            If NPC.IsDead()
               If IntToBool(AutoLoot_Setting_PlayerKillerOnly)
-                If kActor.GetKiller() == PlayerRef
-                  AddObjectToObjectReferenceArray(kItem, kResult)
-                  TryToDisableBody(kItem)
+                If NPC.GetKiller() == PlayerRef
+                  AddObjectToObjectReferenceArray(Item, Result)
+                  TryToDisableBody(Item)
                 EndIf
               Else
-                AddObjectToObjectReferenceArray(kItem, kResult)
-                TryToDisableBody(kItem)
+                AddObjectToObjectReferenceArray(Item, Result)
+                TryToDisableBody(Item)
               EndIf
             EndIf
           EndIf
@@ -175,82 +166,54 @@ ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
     i += 1
   EndWhile
 
-  Return kResult
+  Return Result
 EndFunction
 
-Function LootObject(ObjectReference objLoot)
-  If (objLoot == None) || (DummyActor == None)
+Function LootObject(ObjectReference AObject)
+  If (AObject == None) || (DummyActor == None)
     Return
   EndIf
 
   Bool bStealingIsHostile = IntToBool(AutoLoot_Setting_StealingIsHostile)
 
   If IntToBool(AutoLoot_Setting_AllowStealing)
-    If !bStealingIsHostile && PlayerRef.WouldBeStealing(objLoot)
-      objLoot.SetActorRefOwner(PlayerRef)
+    If !bStealingIsHostile && PlayerRef.WouldBeStealing(AObject)
+      AObject.SetActorRefOwner(PlayerRef)
     EndIf
   EndIf
 
   If IntToBool(AutoLoot_Setting_TakeAll)
-    If IntToBool(AutoLoot_Setting_AllowStealing)
-      objLoot.RemoveAllItems(DummyActor, bStealingIsHostile)
-    Else
-      objLoot.RemoveAllItems(DummyActor, False)
-    EndIf
+    AObject.RemoveAllItems(DummyActor, IntToBool(AutoLoot_Setting_AllowStealing) && bStealingIsHostile)
   Else
-    LootObjectByFilter(objLoot, DummyActor)
+    LootObjectByPerk(PlayerRef, Perks, Filters, AObject, DummyActor)
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Components)
-      LootObjectByTieredFilter(AutoLoot_Perk_Components, AutoLoot_Filter_Components, AutoLoot_Globals_Components, objLoot, DummyActor)
+      LootObjectByTieredFilter(AutoLoot_Globals_Components, AutoLoot_Filter_Components, AObject, DummyActor)
     EndIf
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Valuables)
-      LootObjectByTieredFilter(AutoLoot_Perk_Valuables, AutoLoot_Filter_Valuables, AutoLoot_Globals_Valuables, objLoot, DummyActor)
+      LootObjectByTieredFilter(AutoLoot_Globals_Valuables, AutoLoot_Filter_Valuables, AObject, DummyActor)
     EndIf
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Weapons)
-      LootObjectByTieredFilter(AutoLoot_Perk_Weapons, AutoLoot_Filter_Weapons, AutoLoot_Globals_Weapons, objLoot, DummyActor)
+      LootObjectByTieredFilter(AutoLoot_Globals_Weapons, AutoLoot_Filter_Weapons, AObject, DummyActor)
     EndIf
   EndIf
 
-  TryToDisableBody(objLoot)
+  TryToDisableBody(AObject)
 EndFunction
 
-Function LootObjectByFilter(ObjectReference akContainer, ObjectReference akOtherContainer)
-  Int i = 0
-
-  While i < Perks.Length
-    If PlayerRef.HasPerk(Perks[i])
-      akContainer.RemoveItem(Filters[i], -1, True, akOtherContainer)
-    EndIf
-
-    i += 1
-  EndWhile
-EndFunction
-
-Function LootObjectByTieredFilter(Perk akPerk, FormList akFilter, FormList akGlobals, ObjectReference akContainer, ObjectReference akOtherContainer)
-  Int i = 0
-
-  While i < akFilter.GetSize()
-    If IntToBool(akGlobals.GetAt(i) as GlobalVariable)
-      akContainer.RemoveItem(akFilter.GetAt(i) as FormList, -1, True, akOtherContainer)
-    EndIf
-
-    i += 1
-  EndWhile
-EndFunction
-
-Function TryToDisableBody(ObjectReference akContainer)
+Function TryToDisableBody(ObjectReference AContainer)
   If !IntToBool(AutoLoot_Setting_RemoveBodiesOnLoot)
     Return
   EndIf
 
-  If akContainer.GetItemCount(None) > 0
+  If (AContainer.GetItemCount(None) - AContainer.GetItemCount(NonPlayableItems)) > 0
     Return
   EndIf
 
-  akContainer.DisableNoWait()
-  akContainer.Delete()
+  AContainer.DisableNoWait()
+  AContainer.Delete()
 EndFunction
 
 ; -----------------------------------------------------------------------------
@@ -265,6 +228,7 @@ EndGroup
 Group Forms
   FormList Property Filter Auto Mandatory
   FormList Property Locations Auto Mandatory
+  FormList Property NonPlayableItems Auto Mandatory
   FormList Property QuestItems Auto Mandatory
   FormList Property AutoLoot_Filter_Components Auto Mandatory
   FormList Property AutoLoot_Filter_Valuables Auto Mandatory
