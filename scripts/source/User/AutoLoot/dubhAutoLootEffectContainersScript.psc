@@ -25,30 +25,30 @@ EndEvent
 ; FUNCTIONS
 ; -----------------------------------------------------------------------------
 
-Function _Log(String asTextToPrint, Int aiSeverity = 0) DebugOnly
+Function _Log(String AText, Int ASeverity = 0) DebugOnly
   Debug.OpenUserLog("AutoLoot")
-  Debug.TraceUser("AutoLoot", "dubhAutoLootEffectContainersScript> " + asTextToPrint, aiSeverity)
+  Debug.TraceUser("AutoLoot", "dubhAutoLootEffectContainersScript> " + AText, ASeverity)
 EndFunction
 
-Function LogInfo(String asTextToPrint) DebugOnly
-  _Log("[INFO] " + asTextToPrint, 0)
+Function LogInfo(String AText) DebugOnly
+  _Log("[INFO] " + AText, 0)
 EndFunction
 
-Function LogWarning(String asTextToPrint) DebugOnly
-  _Log("[WARN] " + asTextToPrint, 1)
+Function LogWarning(String AText) DebugOnly
+  _Log("[WARN] " + AText, 1)
 EndFunction
 
-Function LogError(String asTextToPrint) DebugOnly
-  _Log("[ERRO] " + asTextToPrint, 2)
+Function LogError(String AText) DebugOnly
+  _Log("[ERRO] " + AText, 2)
 EndFunction
 
-Bool Function ItemCanBeProcessed(ObjectReference akItem)
-  If !IsObjectInteractable(akItem)
+Bool Function ItemCanBeProcessed(ObjectReference AObject)
+  If !IsObjectInteractable(AObject)
     Return False
   EndIf
 
   If !IntToBool(AutoLoot_Setting_LootSettlements)
-    If SafeHasForm(Locations, akItem.GetCurrentLocation())
+    If SafeHasForm(Locations, AObject.GetCurrentLocation())
       Return False
     EndIf
   EndIf
@@ -56,59 +56,54 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
   Return True
 EndFunction
 
-Function BuildAndProcessReferences(FormList akFilter)
-  ObjectReference[] LootArray = PlayerRef.FindAllReferencesOfType(akFilter, Radius.GetValue())
+Function BuildAndProcessReferences(FormList AFilter)
+  ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
 
-  If (LootArray == None) || (LootArray.Length == 0)
+  If Loot.Length == 0
     Return
   EndIf
 
-  LootArray = FilterLootArray(LootArray)
+  Loot = FilterLootArray(Loot)
 
-  If (LootArray == None) || (LootArray.Length == 0)
+  If Loot.Length == 0
     Return
   EndIf
 
   Int i = 0
-  Bool bContinue = True
 
-  While (i < LootArray.Length) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+  While i < Loot.Length
+    If PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+      ObjectReference Item = Loot[i] as ObjectReference
 
-    If bContinue
-      ObjectReference objLoot = LootArray[i]
-
-      If objLoot
-        LootObject(objLoot)
+      If Item
+        LootObject(Item)
       EndIf
+    Else
+      ; just try to start a new timer, no need to finish loop
+      Return
     EndIf
 
     i += 1
   EndWhile
-
-  If (LootArray == None) || (LootArray.Length == 0)
-    Return
-  EndIf
-
-  LootArray.Clear()
 EndFunction
 
-Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectReference[] akArray)
+Function AddObjectToObjectReferenceArray(ObjectReference AContainer, ObjectReference[] ALoot)
   ; exclude empty containers
-  If akContainer.GetItemCount(None) == 0
+  ; note: GetItemCount(None) counts non-playable items so we need to account for non-playable items
+  If (AContainer.GetItemCount(None) - AContainer.GetItemCount(NonPlayableItems)) <= 0
     Return
   EndIf
 
   ; exclude quest items that are explicitly excluded
   If QuestItems.GetSize() > 0
-    If QuestItems.HasForm(akContainer)
+    If QuestItems.HasForm(AContainer)
       Return
     EndIf
   EndIf
 
   ; do not add items in locked containers when Auto Lockpick is disabled
   If !IntToBool(AutoLoot_Setting_UnlockContainers)
-    If akContainer.IsLocked()
+    If AContainer.IsLocked()
       Return
     EndIf
   EndIf
@@ -116,28 +111,28 @@ Function AddObjectToObjectReferenceArray(ObjectReference akContainer, ObjectRefe
   Bool bAllowStealing = IntToBool(AutoLoot_Setting_AllowStealing)
   Bool bLootOnlyOwned = IntToBool(AutoLoot_Setting_LootOnlyOwned)
 
-  AddObjectToArray(akArray, akContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
+  AddObjectToArray(ALoot, AContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
 EndFunction
 
-ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
-  ObjectReference[] kResult = new ObjectReference[0]
+ObjectReference[] Function FilterLootArray(ObjectReference[] ALoot)
+  ObjectReference[] Result = new ObjectReference[0]
 
-  If akArray.Length == 0
-    Return kResult
+  If ALoot.Length == 0
+    Return Result
   EndIf
 
   Int i = 0
   Bool bContinue = True
 
-  While (i < akArray.Length) && bContinue
+  While (i < ALoot.Length) && bContinue
     bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
     If bContinue
-      ObjectReference kItem = akArray[i]
+      ObjectReference Item = ALoot[i] as ObjectReference
 
-      If kItem
-        If ItemCanBeProcessed(kItem)
-          AddObjectToObjectReferenceArray(kItem, kResult)
+      If Item
+        If ItemCanBeProcessed(Item)
+          AddObjectToObjectReferenceArray(Item, Result)
         EndIf
       EndIf
     EndIf
@@ -145,82 +140,54 @@ ObjectReference[] Function FilterLootArray(ObjectReference[] akArray)
     i += 1
   EndWhile
 
-  Return kResult
+  Return Result
 EndFunction
 
-Function LootObject(ObjectReference objLoot)
-  If (objLoot == None) || (DummyActor == None)
+Function LootObject(ObjectReference AObject)
+  If (AObject == None) || (DummyActor == None)
     Return
   EndIf
 
   Bool bStealingIsHostile = IntToBool(AutoLoot_Setting_StealingIsHostile)
 
   If IntToBool(AutoLoot_Setting_AllowStealing)
-    If !bStealingIsHostile && PlayerRef.WouldBeStealing(objLoot)
-      objLoot.SetActorRefOwner(PlayerRef)
+    If !bStealingIsHostile && PlayerRef.WouldBeStealing(AObject)
+      AObject.SetActorRefOwner(PlayerRef)
     EndIf
   EndIf
 
-  If objLoot.IsLocked()
-    If !TryToUnlockForXP(objLoot)
+  If AObject.IsLocked()
+    If !TryToUnlockForXP(AObject)
       Return
     EndIf
   EndIf
 
   If IntToBool(AutoLoot_Setting_TakeAll)
-    If IntToBool(AutoLoot_Setting_AllowStealing)
-      objLoot.RemoveAllItems(DummyActor, bStealingIsHostile)
-    Else
-      objLoot.RemoveAllItems(DummyActor, False)
-    EndIf
+    AObject.RemoveAllItems(DummyActor, IntToBool(AutoLoot_Setting_AllowStealing) && bStealingIsHostile)
   Else
-    LootObjectByFilter(objLoot, DummyActor)
+    LootObjectByPerk(PlayerRef,Perks, Filters, AObject, DummyActor)
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Components)
-      LootObjectByTieredFilter(AutoLoot_Perk_Components, AutoLoot_Filter_Components, AutoLoot_Globals_Components, objLoot, DummyActor)
+      LootObjectByTieredFilter(AutoLoot_Globals_Components, AutoLoot_Filter_Components, AObject, DummyActor)
     EndIf
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Valuables)
-      LootObjectByTieredFilter(AutoLoot_Perk_Valuables, AutoLoot_Filter_Valuables, AutoLoot_Globals_Valuables, objLoot, DummyActor)
+      LootObjectByTieredFilter(AutoLoot_Globals_Valuables, AutoLoot_Filter_Valuables, AObject, DummyActor)
     EndIf
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Weapons)
-      LootObjectByTieredFilter(AutoLoot_Perk_Weapons, AutoLoot_Filter_Weapons, AutoLoot_Globals_Weapons, objLoot, DummyActor)
+      LootObjectByTieredFilter(AutoLoot_Globals_Weapons, AutoLoot_Filter_Weapons, AObject, DummyActor)
     EndIf
   EndIf
-EndFunction
-
-Function LootObjectByFilter(ObjectReference akContainer, ObjectReference akOtherContainer)
-  Int i = 0
-
-  While i < Perks.Length
-    If PlayerRef.HasPerk(Perks[i])
-      akContainer.RemoveItem(Filters[i], -1, True, akOtherContainer)
-    EndIf
-
-    i += 1
-  EndWhile
-EndFunction
-
-Function LootObjectByTieredFilter(Perk akPerk, FormList akFilter, FormList akGlobals, ObjectReference akContainer, ObjectReference akOtherContainer)
-  Int i = 0
-
-  While i < akFilter.GetSize()
-    If IntToBool(akGlobals.GetAt(i) as GlobalVariable)
-      akContainer.RemoveItem(akFilter.GetAt(i) as FormList, -1, True, akOtherContainer)
-    EndIf
-
-    i += 1
-  EndWhile
 EndFunction
 
 Bool Function PlayerCanPickLock()
   Return PlayerRef.HasPerk(Locksmith01) || PlayerRef.HasPerk(Locksmith02) || PlayerRef.HasPerk(Locksmith03) || PlayerRef.HasPerk(Locksmith04)
 EndFunction
 
-Bool Function TryToUnlockForXP(ObjectReference objContainer)
+Bool Function TryToUnlockForXP(ObjectReference AContainer)
   Int iXPReward = 0
-  Int iLockDifficulty = objContainer.GetLockLevel()
+  Int iLockDifficulty = AContainer.GetLockLevel()
 
   If iLockDifficulty < 50
     iXPReward = Game.GetGameSettingFloat("fLockpickXPRewardEasy") as Int ; 5 Base XP
@@ -233,7 +200,7 @@ Bool Function TryToUnlockForXP(ObjectReference objContainer)
   EndIf
 
   If iLockDifficulty < 50 || PlayerCanPickLock()
-    objContainer.Unlock(False)
+    AContainer.Unlock(False)
     Game.RewardPlayerXP(iXPReward, False)
 
     Return True
@@ -254,6 +221,7 @@ EndGroup
 Group Forms
   FormList Property Filter Auto Mandatory
   FormList Property Locations Auto Mandatory
+  FormList Property NonPlayableItems Auto Mandatory
   FormList Property QuestItems Auto Mandatory
   FormList Property AutoLoot_Filter_Components Auto Mandatory
   FormList Property AutoLoot_Filter_Valuables Auto Mandatory
