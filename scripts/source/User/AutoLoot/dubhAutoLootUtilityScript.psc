@@ -5,30 +5,30 @@ Bool Function IsPlayerControlled() Global
   Return !Utility.IsInMenuMode() && Game.IsMovementControlsEnabled() && !Game.IsVATSPlaybackActive()
 EndFunction
 
-Bool Function IsObjectInteractable(ObjectReference akRef) Global
-  Return akRef.Is3DLoaded() && !akRef.IsDisabled() && !akRef.IsDeleted() && !akRef.IsDestroyed() && !akRef.IsActivationBlocked()
+Bool Function IsObjectInteractable(ObjectReference AObject) Global
+  Return AObject.Is3DLoaded() && !AObject.IsDisabled() && !AObject.IsDeleted() && !AObject.IsDestroyed() && !AObject.IsActivationBlocked()
 EndFunction
 
-Bool Function IntToBool(GlobalVariable akGlobalVariable) Global
-  Return akGlobalVariable.GetValue() as Int == 1
+Bool Function IntToBool(GlobalVariable AGlobalVariable) Global
+  Return AGlobalVariable.GetValue() as Int == 1
 EndFunction
 
-Bool Function SafeHasForm(FormList akFormList, Form akForm) Global
-  If akForm is Actor
-    akForm = (akForm as Actor).GetLeveledActorBase() as Form
+Bool Function SafeHasForm(FormList AList, Form AForm) Global
+  If AForm is Actor
+    AForm = (AForm as Actor).GetLeveledActorBase() as Form
   EndIf
 
-  Return akFormList.GetSize() > 0 && akFormList.HasForm(akForm)
+  Return AList.GetSize() > 0 && AList.HasForm(AForm)
 EndFunction
 
-Function AddObjectToArray(ObjectReference[] akArray, ObjectReference akContainer, Actor akPlayerRef, Bool abAllowStealing, Bool abLootOnlyOwned) Global
+Function AddObjectToArray(ObjectReference[] ALoot, ObjectReference AObject, Actor APlayer, Bool AAllowStealing, Bool ALootOnlyOwned) Global
   ; add only owned items when Auto Steal is enabled and mode is set to Owned Only
-  If abAllowStealing
+  If AAllowStealing
     ; special logic for only owned option
-    If abLootOnlyOwned
+    If ALootOnlyOwned
       ; loot only owned items
-      If akPlayerRef.WouldBeStealing(akContainer)
-        akArray.Add(akContainer, 1)
+      If APlayer.WouldBeStealing(AObject)
+        ALoot.Add(AObject, 1)
         Return
       Else
         ; don't loot unowned items
@@ -37,12 +37,36 @@ Function AddObjectToArray(ObjectReference[] akArray, ObjectReference akContainer
     EndIf
 
     ; otherwise, add all items when Auto Steal is enabled and mode is set to Owned and Unowned
-    akArray.Add(akContainer, 1)
+    ALoot.Add(AObject, 1)
     Return
   EndIf
 
   ; loot only unowned items because Allow Stealing is off
-  If !akPlayerRef.WouldBeStealing(akContainer)
-    akArray.Add(akContainer, 1)
+  If !APlayer.WouldBeStealing(AObject)
+    ALoot.Add(AObject, 1)
   EndIf
+EndFunction
+
+Function LootObjectByPerk(Actor APlayer, Perk[] APerks, FormList[] AFilters, ObjectReference AContainer, ObjectReference AOtherContainer) Global
+  Int i = 0
+
+  While i < APerks.Length
+    If APlayer.HasPerk(APerks[i])
+      AContainer.RemoveItem(AFilters[i], -1, True, AOtherContainer)
+    EndIf
+
+    i += 1
+  EndWhile
+EndFunction
+
+Function LootObjectByTieredFilter(FormList AGlobals, FormList AFilter, ObjectReference AContainer, ObjectReference AOtherContainer) Global
+  Int i = 0
+
+  While i < AFilter.GetSize()
+    If IntToBool(AGlobals.GetAt(i) as GlobalVariable)
+      AContainer.RemoveItem(AFilter.GetAt(i) as FormList, -1, True, AOtherContainer)
+    EndIf
+
+    i += 1
+  EndWhile
 EndFunction
