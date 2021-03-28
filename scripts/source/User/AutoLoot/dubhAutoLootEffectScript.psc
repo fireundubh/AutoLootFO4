@@ -29,30 +29,30 @@ EndEvent
 ; FUNCTIONS
 ; -----------------------------------------------------------------------------
 
-Function _Log(String asTextToPrint, Int aiSeverity = 0) DebugOnly
+Function _Log(String AText, Int ASeverity = 0) DebugOnly
   Debug.OpenUserLog("AutoLoot")
-  Debug.TraceUser("AutoLoot", "dubhAutoLootEffectScript> " + asTextToPrint, aiSeverity)
+  Debug.TraceUser("AutoLoot", "dubhAutoLootEffectScript> " + AText, ASeverity)
 EndFunction
 
-Function LogInfo(String asTextToPrint) DebugOnly
-  _Log("[INFO] " + asTextToPrint, 0)
+Function LogInfo(String AText) DebugOnly
+  _Log("[INFO] " + AText, 0)
 EndFunction
 
-Function LogWarning(String asTextToPrint) DebugOnly
-  _Log("[WARN] " + asTextToPrint, 1)
+Function LogWarning(String AText) DebugOnly
+  _Log("[WARN] " + AText, 1)
 EndFunction
 
-Function LogError(String asTextToPrint) DebugOnly
-  _Log("[ERRO] " + asTextToPrint, 2)
+Function LogError(String AText) DebugOnly
+  _Log("[ERRO] " + AText, 2)
 EndFunction
 
-Bool Function ItemCanBeProcessed(ObjectReference akItem)
-  If !IsObjectInteractable(akItem)
+Bool Function ItemCanBeProcessed(ObjectReference AObject)
+  If !IsObjectInteractable(AObject)
     Return False
   EndIf
 
   If !IntToBool(AutoLoot_Setting_LootSettlements)
-    If SafeHasForm(Locations, akItem.GetCurrentLocation())
+    If SafeHasForm(Locations, AObject.GetCurrentLocation())
       Return False
     EndIf
   EndIf
@@ -60,18 +60,22 @@ Bool Function ItemCanBeProcessed(ObjectReference akItem)
   Return True
 EndFunction
 
-Function BuildAndProcessReferences(FormList akFilter)
-  ObjectReference[] LootArray = PlayerRef.FindAllReferencesOfType(akFilter, Radius.GetValue())
+Function BuildAndProcessReferences(FormList AFilter)
+  ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
+
+  If Loot.Length == 0
+    Return
+  EndIf
 
   Int i = 0
 
-  While i < LootArray.Length
+  While i < Loot.Length
     If PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-      ObjectReference kObject = LootArray[i]
+      ObjectReference Item = Loot[i] as ObjectReference
 
-      If kObject && kObject.GetContainer() == None && !SafeHasForm(QuestItems, kObject)
-        If ItemCanBeProcessed(kObject)
-          TryLootObject(kObject)
+      If Item && Item.GetContainer() == None && !SafeHasForm(QuestItems, Item)
+        If ItemCanBeProcessed(Item)
+          TryLootObject(Item)
         EndIf
       EndIf
     Else
@@ -83,25 +87,25 @@ Function BuildAndProcessReferences(FormList akFilter)
   EndWhile
 EndFunction
 
-Function LootObject(ObjectReference akObject)
+Function LootObject(ObjectReference AObject)
   If bAllowStealing
-    If !bStealingIsHostile && PlayerRef.WouldBeStealing(akObject)
-      akObject.SetActorRefOwner(PlayerRef)
+    If !bStealingIsHostile && PlayerRef.WouldBeStealing(AObject)
+      AObject.SetActorRefOwner(PlayerRef)
     EndIf
   EndIf
 
-  Bool bDefaultProcessingOnly = akObject.GetBaseObject() is Activator
-  akObject.Activate(DummyActor, bDefaultProcessingOnly)
+  Bool bDefaultProcessingOnly = AObject.GetBaseObject() is Activator
+  AObject.Activate(DummyActor, bDefaultProcessingOnly)
 EndFunction
 
-Function TryLootObject(ObjectReference akObject)
+Function TryLootObject(ObjectReference AObject)
   ; add only owned items when Auto Steal is enabled and mode is set to Owned Only
   If bAllowStealing
     ; special logic for only owned option
     If bLootOnlyOwned
       ; loot only owned items
-      If PlayerRef.WouldBeStealing(akObject)
-        LootObject(akObject)
+      If PlayerRef.WouldBeStealing(AObject)
+        LootObject(AObject)
         Return
       Else
         ; don't loot unowned items
@@ -110,13 +114,13 @@ Function TryLootObject(ObjectReference akObject)
     EndIf
 
     ; otherwise, add all items when Auto Steal is enabled and mode is set to Owned and Unowned
-    LootObject(akObject)
+    LootObject(AObject)
     Return
   EndIf
 
   ; loot only unowned items because Allow Stealing is off
-  If !PlayerRef.WouldBeStealing(akObject)
-    LootObject(akObject)
+  If !PlayerRef.WouldBeStealing(AObject)
+    LootObject(AObject)
   EndIf
 EndFunction
 
