@@ -118,15 +118,15 @@ Function _LootObject(ObjectReference AObject)
     LootObjectByPerk(PlayerRef,Perks, Filters, AObject, DummyActor)
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Components)
-      LootObjectByTieredFilter(AutoLoot_Globals_Components, AutoLoot_Filter_Components, AObject, DummyActor)
+      LootObjectByComponent(AutoLoot_Globals_Components, AutoLoot_Filter_Components, AObject, DummyActor)
     EndIf
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Valuables)
-      LootObjectByTieredFilter(AutoLoot_Globals_Valuables, AutoLoot_Filter_Valuables, AObject, DummyActor)
+      LootObjectByFormList(AutoLoot_Globals_Valuables, AutoLoot_Filter_Valuables, AObject, DummyActor)
     EndIf
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Weapons)
-      LootObjectByTieredFilter(AutoLoot_Globals_Weapons, AutoLoot_Filter_Weapons, AObject, DummyActor)
+      LootObjectByFormList(AutoLoot_Globals_Weapons, AutoLoot_Filter_Weapons, AObject, DummyActor)
     EndIf
   EndIf
 EndFunction
@@ -158,7 +158,7 @@ Function TryLootObject(ObjectReference AObject)
 EndFunction
 
 Bool Function PlayerCanPickLock()
-  Return PlayerRef.HasPerk(Locksmith01) || PlayerRef.HasPerk(Locksmith02) || PlayerRef.HasPerk(Locksmith03) || PlayerRef.HasPerk(Locksmith04)
+  Return PlayerRef.HasPerk(Locksmith[0]) || PlayerRef.HasPerk(Locksmith[1]) || PlayerRef.HasPerk(Locksmith[2]) || PlayerRef.HasPerk(Locksmith[3])
 EndFunction
 
 Bool Function TryToUnlockForXP(ObjectReference AContainer)
@@ -210,12 +210,12 @@ Group Forms
   FormList Property Locations Auto Mandatory
   FormList Property NonPlayableItems Auto Mandatory
   FormList Property QuestItems Auto Mandatory
-  FormList Property AutoLoot_Filter_Components Auto Mandatory
-  FormList Property AutoLoot_Filter_Valuables Auto Mandatory
-  FormList Property AutoLoot_Filter_Weapons Auto Mandatory
-  FormList Property AutoLoot_Globals_Components Auto Mandatory
-  FormList Property AutoLoot_Globals_Valuables Auto Mandatory
-  FormList Property AutoLoot_Globals_Weapons Auto Mandatory
+  Component[] Property AutoLoot_Filter_Components Auto Mandatory
+  FormList[] Property AutoLoot_Filter_Valuables Auto Mandatory
+  FormList[] Property AutoLoot_Filter_Weapons Auto Mandatory
+  GlobalVariable[] Property AutoLoot_Globals_Components Auto Mandatory
+  GlobalVariable[] Property AutoLoot_Globals_Valuables Auto Mandatory
+  GlobalVariable[] Property AutoLoot_Globals_Weapons Auto Mandatory
 EndGroup
 
 Group Globals
@@ -247,8 +247,5 @@ Group Func_LootObjectByFilter
 EndGroup
 
 Group Func_PlayerCanPickLock
-  Perk Property Locksmith01 Auto Mandatory
-  Perk Property Locksmith02 Auto Mandatory
-  Perk Property Locksmith03 Auto Mandatory
-  Perk Property Locksmith04 Auto Mandatory
+  Perk[] Property Locksmith Auto Mandatory
 EndGroup

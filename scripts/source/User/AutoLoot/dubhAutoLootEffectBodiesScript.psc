@@ -138,15 +138,15 @@ Function _LootObject(ObjectReference AObject)
     LootObjectByPerk(PlayerRef, Perks, Filters, AObject, DummyActor)
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Components)
-      LootObjectByTieredFilter(AutoLoot_Globals_Components, AutoLoot_Filter_Components, AObject, DummyActor)
+      LootObjectByComponent(AutoLoot_Globals_Components, AutoLoot_Filter_Components, AObject, DummyActor)
     EndIf
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Valuables)
-      LootObjectByTieredFilter(AutoLoot_Globals_Valuables, AutoLoot_Filter_Valuables, AObject, DummyActor)
+      LootObjectByFormList(AutoLoot_Globals_Valuables, AutoLoot_Filter_Valuables, AObject, DummyActor)
     EndIf
 
     If PlayerRef.HasPerk(AutoLoot_Perk_Weapons)
-      LootObjectByTieredFilter(AutoLoot_Globals_Weapons, AutoLoot_Filter_Weapons, AObject, DummyActor)
+      LootObjectByFormList(AutoLoot_Globals_Weapons, AutoLoot_Filter_Weapons, AObject, DummyActor)
     EndIf
   EndIf
 
@@ -217,12 +217,12 @@ Group Forms
   FormList Property Locations Auto Mandatory
   FormList Property NonPlayableItems Auto Mandatory
   FormList Property QuestItems Auto Mandatory
-  FormList Property AutoLoot_Filter_Components Auto Mandatory
-  FormList Property AutoLoot_Filter_Valuables Auto Mandatory
-  FormList Property AutoLoot_Filter_Weapons Auto Mandatory
-  FormList Property AutoLoot_Globals_Components Auto Mandatory
-  FormList Property AutoLoot_Globals_Valuables Auto Mandatory
-  FormList Property AutoLoot_Globals_Weapons Auto Mandatory
+  Component[] Property AutoLoot_Filter_Components Auto Mandatory
+  FormList[] Property AutoLoot_Filter_Valuables Auto Mandatory
+  FormList[] Property AutoLoot_Filter_Weapons Auto Mandatory
+  GlobalVariable[] Property AutoLoot_Globals_Components Auto Mandatory
+  GlobalVariable[] Property AutoLoot_Globals_Valuables Auto Mandatory
+  GlobalVariable[] Property AutoLoot_Globals_Weapons Auto Mandatory
 EndGroup
 
 Group Globals

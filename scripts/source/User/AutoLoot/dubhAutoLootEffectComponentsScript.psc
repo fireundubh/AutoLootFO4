@@ -71,11 +71,9 @@ Bool Function ItemCanBeProcessed(ObjectReference AObject)
 
   Int i = 0
 
-  While (i < AutoLoot_Globals_Components.GetSize())
-    If IntToBool(AutoLoot_Globals_Components.GetAt(i) as GlobalVariable)
-      Component CMPO = AutoLoot_Filter_Components.GetAt(i) as Component
-
-      If Item.GetObjectComponentCount(CMPO) > 0
+  While (i < AutoLoot_Globals_Components.Length)
+    If IntToBool(AutoLoot_Globals_Components[i])
+      If Item.GetObjectComponentCount(AutoLoot_Filter_Components[i]) > 0
         Return True
       EndIf
     EndIf
@@ -164,8 +162,8 @@ EndGroup
 Group Forms
   FormList Property Filter Auto Mandatory
   FormList Property QuestItems Auto Mandatory
-  FormList Property AutoLoot_Filter_Components Auto Mandatory
-  FormList Property AutoLoot_Globals_Components Auto Mandatory
+  Component[] Property AutoLoot_Filter_Components Auto Mandatory
+  GlobalVariable[] Property AutoLoot_Globals_Components Auto Mandatory
   FormList Property Locations Auto Mandatory
 EndGroup
 

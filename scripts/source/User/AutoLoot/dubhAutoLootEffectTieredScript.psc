@@ -21,10 +21,10 @@ Event OnTimer(Int aiTimerID)
 
       Int i = 0
 
-      While (i < Filter_Globals.GetSize()) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+      While (i < Filter_Globals.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
 
-        If IntToBool(Filter_Globals.GetAt(i) as GlobalVariable)
-          BuildAndProcessReferences(Filter.GetAt(i) as FormList)
+        If IntToBool(Filter_Globals[i])
+          BuildAndProcessReferences(Filter[i])
         EndIf
 
         i += 1
@@ -150,8 +150,8 @@ Group Actors
 EndGroup
 
 Group Forms
-  FormList Property Filter Auto Mandatory
-  FormList Property Filter_Globals Auto Mandatory
+  FormList[] Property Filter Auto Mandatory
+  GlobalVariable[] Property Filter_Globals Auto Mandatory
   FormList Property QuestItems Auto Mandatory
   FormList Property Locations Auto Mandatory
 EndGroup

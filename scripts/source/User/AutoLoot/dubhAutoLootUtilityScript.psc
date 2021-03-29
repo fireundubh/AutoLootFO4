@@ -33,12 +33,24 @@ Function LootObjectByPerk(Actor APlayer, Perk[] APerks, FormList[] AFilters, Obj
   EndWhile
 EndFunction
 
-Function LootObjectByTieredFilter(FormList AGlobals, FormList AFilter, ObjectReference AContainer, ObjectReference AOtherContainer) Global
+Function LootObjectByComponent(GlobalVariable[] AGlobals, Component[] AFilter, ObjectReference AContainer, ObjectReference AOtherContainer) Global
   Int i = 0
 
-  While i < AFilter.GetSize()
-    If IntToBool(AGlobals.GetAt(i) as GlobalVariable)
-      AContainer.RemoveItem(AFilter.GetAt(i) as FormList, -1, True, AOtherContainer)
+  While i < AFilter.Length
+    If IntToBool(AGlobals[i])
+      AContainer.RemoveItem(AFilter[i], -1, True, AOtherContainer)
+    EndIf
+
+    i += 1
+  EndWhile
+EndFunction
+
+Function LootObjectByFormList(GlobalVariable[] AGlobals, FormList[] AFilter, ObjectReference AContainer, ObjectReference AOtherContainer) Global
+  Int i = 0
+
+  While i < AFilter.Length
+    If IntToBool(AGlobals[i])
+      AContainer.RemoveItem(AFilter[i], -1, True, AOtherContainer)
     EndIf
 
     i += 1
