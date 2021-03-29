@@ -37,6 +37,7 @@
     <ZipFile Name="@modname" RootDir="@modpath" Compression="deflate">
       <Include>@modpath\Auto Loot.esp</Include>
       <Include>@modpath\Auto Loot - Main.ba2</Include>
+      <Include>@modpath\Non-Playable Flags Patch.esp</Include>
     </ZipFile>
   </ZipFiles>
 </PapyrusProject>
