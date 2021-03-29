@@ -57,6 +57,10 @@ Bool Function ItemCanBeProcessed(ObjectReference AObject)
     EndIf
   EndIf
 
+  If SafeHasForm(QuestItems, AObject)
+    Return False
+  EndIf
+
   Return True
 EndFunction
 
@@ -69,25 +73,18 @@ Function BuildAndProcessReferences(FormList AFilter)
 
   Int i = 0
 
-  While i < Loot.Length
-    If PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-      ObjectReference Item = Loot[i] as ObjectReference
+  While (i < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+    ObjectReference Item = Loot[i] as ObjectReference
 
-      If Item && Item.GetContainer() == None && !SafeHasForm(QuestItems, Item)
-        If ItemCanBeProcessed(Item)
-          TryLootObject(Item)
-        EndIf
-      EndIf
-    Else
-      ; just try to start a new timer, no need to finish loop
-      Return
+    If Item && ItemCanBeProcessed(Item) && (Item.GetContainer() == None)
+      TryLootObject(Item)
     EndIf
 
     i += 1
   EndWhile
 EndFunction
 
-Function LootObject(ObjectReference AObject)
+Function _LootObject(ObjectReference AObject)
   If bAllowStealing
     If !bStealingIsHostile && PlayerRef.WouldBeStealing(AObject)
       AObject.SetActorRefOwner(PlayerRef)
@@ -105,7 +102,7 @@ Function TryLootObject(ObjectReference AObject)
     If bLootOnlyOwned
       ; loot only owned items
       If PlayerRef.WouldBeStealing(AObject)
-        LootObject(AObject)
+        _LootObject(AObject)
         Return
       Else
         ; don't loot unowned items
@@ -114,13 +111,13 @@ Function TryLootObject(ObjectReference AObject)
     EndIf
 
     ; otherwise, add all items when Auto Steal is enabled and mode is set to Owned and Unowned
-    LootObject(AObject)
+    _LootObject(AObject)
     Return
   EndIf
 
   ; loot only unowned items because Allow Stealing is off
   If !PlayerRef.WouldBeStealing(AObject)
-    LootObject(AObject)
+    _LootObject(AObject)
   EndIf
 EndFunction
 

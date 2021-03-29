@@ -14,6 +14,11 @@ EndEvent
 Event OnTimer(Int aiTimerID)
   If PlayerRef.HasPerk(ActivePerk)
     If IsPlayerControlled()
+      bAllowStealing     = IntToBool(AutoLoot_Setting_AllowStealing)
+      bLootOnlyOwned     = IntToBool(AutoLoot_Setting_LootOnlyOwned)
+      bLootSettlements   = IntToBool(AutoLoot_Setting_LootSettlements)
+      bStealingIsHostile = IntToBool(AutoLoot_Setting_StealingIsHostile)
+
       BuildAndProcessReferences(Filter)
     EndIf
 
@@ -43,113 +48,35 @@ Function LogError(String AText) DebugOnly
 EndFunction
 
 Bool Function ItemCanBeProcessed(ObjectReference AObject)
+  If (AObject.GetContainer() != None)
+    Return False
+  EndIf
+
   If !IsObjectInteractable(AObject)
     Return False
   EndIf
 
-  If !IntToBool(AutoLoot_Setting_LootSettlements)
+  If !bLootSettlements
     If SafeHasForm(Locations, AObject.GetCurrentLocation())
       Return False
     EndIf
   EndIf
 
+  If SafeHasForm(QuestItems, AObject)
+    Return False
+  EndIf
+
+  ; references don't have component data, so we need to use the base object
   MiscObject Item = AObject.GetBaseObject() as MiscObject
 
-  Return ItemHasLootableComponent(Item)
-EndFunction
-
-Function BuildAndProcessReferences(FormList AFilter)
-  ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
-
-  If Loot.Length == 0
-    Return
-  EndIf
-
-  Loot = FilterLootArray(Loot)
-
-  If Loot.Length == 0
-    Return
-  EndIf
-
   Int i = 0
 
-  While i < Loot.Length
-    If PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-      ObjectReference Item = Loot[i] as ObjectReference
+  While (i < AutoLoot_Globals_Components.GetSize())
+    If IntToBool(AutoLoot_Globals_Components.GetAt(i) as GlobalVariable)
+      Component CMPO = AutoLoot_Filter_Components.GetAt(i) as Component
 
-      If Item
-        LootObject(Item)
-      EndIf
-    Else
-      ; just try to start a new timer, no need to finish loop
-      Return
-    EndIf
-
-    i += 1
-  EndWhile
-EndFunction
-
-Function AddObjectToObjectReferenceArray(ObjectReference AContainer, ObjectReference[] ALoot)
-  ; exclude quest items that are explicitly excluded
-  If SafeHasForm(QuestItems, AContainer)
-    Return
-  EndIf
-
-  Bool bAllowStealing = IntToBool(AutoLoot_Setting_AllowStealing)
-  Bool bLootOnlyOwned = IntToBool(AutoLoot_Setting_LootOnlyOwned)
-
-  AddObjectToArray(ALoot, AContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
-EndFunction
-
-ObjectReference[] Function FilterLootArray(ObjectReference[] ALoot)
-  ObjectReference[] Result = new ObjectReference[0]
-
-  If ALoot.Length == 0
-    Return Result
-  EndIf
-
-  Int i = 0
-  Bool bContinue = True
-
-  While (i < ALoot.Length) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-
-    If bContinue
-      ObjectReference Item = ALoot[i]
-
-      If Item
-        If ItemCanBeProcessed(Item)
-          ObjectReference ItemContainer = Item.GetContainer()
-
-          If !ItemContainer && (ItemContainer != PlayerRef)
-            AddObjectToObjectReferenceArray(Item, Result)
-          EndIf
-        EndIf
-      EndIf
-    EndIf
-
-    i += 1
-  EndWhile
-
-  Return Result
-EndFunction
-
-Bool Function ItemHasLootableComponent(MiscObject AObject)
-  Int i = 0
-  Bool bContinue = True
-
-  ; Loop through global formlist
-  While (i < AutoLoot_Globals_Components.GetSize()) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-
-    If bContinue
-      ; If the component is preferred, and akItem has that component, return True
-      If IntToBool(AutoLoot_Globals_Components.GetAt(i) as GlobalVariable)
-        Component Item = AutoLoot_Filter_Components.GetAt(i) as Component
-
-        If AObject.GetObjectComponentCount(Item) > 0
-          Return True
-        EndIf
+      If Item.GetObjectComponentCount(CMPO) > 0
+        Return True
       EndIf
     EndIf
 
@@ -159,19 +86,71 @@ Bool Function ItemHasLootableComponent(MiscObject AObject)
   Return False
 EndFunction
 
-Function LootObject(ObjectReference AObject)
-  If (AObject == None) || (DummyActor == None)
+Function BuildAndProcessReferences(FormList AFilter)
+  ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
+
+  If Loot.Length == 0
     Return
   EndIf
 
-  If IntToBool(AutoLoot_Setting_AllowStealing)
-    If !IntToBool(AutoLoot_Setting_StealingIsHostile) && PlayerRef.WouldBeStealing(AObject)
+  Int i = 0
+
+  While (i < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+    ObjectReference Item = Loot[i] as ObjectReference
+
+    If Item && ItemCanBeProcessed(Item) && (Item.GetContainer() != PlayerRef)
+      TryLootObject(Item)
+    EndIf
+
+    i += 1
+  EndWhile
+EndFunction
+
+Function _LootObject(ObjectReference AObject)
+  If bAllowStealing
+    If !bStealingIsHostile && PlayerRef.WouldBeStealing(AObject)
       AObject.SetActorRefOwner(PlayerRef)
     EndIf
   EndIf
 
-  AObject.Activate(DummyActor, False)
+  Bool bDefaultProcessingOnly = AObject.GetBaseObject() is Activator
+  AObject.Activate(DummyActor, bDefaultProcessingOnly)
 EndFunction
+
+Function TryLootObject(ObjectReference AObject)
+  ; add only owned items when Auto Steal is enabled and mode is set to Owned Only
+  If bAllowStealing
+    ; special logic for only owned option
+    If bLootOnlyOwned
+      ; loot only owned items
+      If PlayerRef.WouldBeStealing(AObject)
+        _LootObject(AObject)
+        Return
+      Else
+        ; don't loot unowned items
+        Return
+      EndIf
+    EndIf
+
+    ; otherwise, add all items when Auto Steal is enabled and mode is set to Owned and Unowned
+    _LootObject(AObject)
+    Return
+  EndIf
+
+  ; loot only unowned items because Allow Stealing is off
+  If !PlayerRef.WouldBeStealing(AObject)
+    _LootObject(AObject)
+  EndIf
+EndFunction
+
+; -----------------------------------------------------------------------------
+; VARIABLES
+; -----------------------------------------------------------------------------
+
+Bool bAllowStealing     = False
+Bool bLootOnlyOwned     = False
+Bool bLootSettlements   = False
+Bool bStealingIsHostile = False
 
 ; -----------------------------------------------------------------------------
 ; PROPERTIES

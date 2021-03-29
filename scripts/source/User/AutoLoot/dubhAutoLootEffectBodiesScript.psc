@@ -14,6 +14,13 @@ EndEvent
 Event OnTimer(Int aiTimerID)
   If PlayerRef.HasPerk(ActivePerk)
     If IsPlayerControlled()
+      bAllowStealing     = IntToBool(AutoLoot_Setting_AllowStealing)
+      bLootOnlyOwned     = IntToBool(AutoLoot_Setting_LootOnlyOwned)
+      bLootSettlements   = IntToBool(AutoLoot_Setting_LootSettlements)
+      bPlayerKillerOnly  = IntToBool(AutoLoot_Setting_PlayerKillerOnly)
+      bStealingIsHostile = IntToBool(AutoLoot_Setting_StealingIsHostile)
+      bTakeAll           = IntToBool(AutoLoot_Setting_TakeAll)
+
       BuildAndProcessReferences(Filter)
     EndIf
 
@@ -45,16 +52,30 @@ EndFunction
 Bool Function ItemCanBeProcessed(ObjectReference AObject)
   If !(AObject is Actor)
     Return False
+  Else
+    If AObject == PlayerRef
+      Return False
+    EndIf
+
+    ; exclude empty containers
+    ; note: GetItemCount(None) counts non-playable items so we need to account for non-playable items
+    If (AObject.GetItemCount(None) - AObject.GetItemCount(NonPlayableItems)) <= 0
+      Return False
+    EndIf
   EndIf
 
   If !IsObjectInteractable(AObject)
     Return False
   EndIf
 
-  If !IntToBool(AutoLoot_Setting_LootSettlements)
+  If !bLootSettlements
     If SafeHasForm(Locations, AObject.GetCurrentLocation())
       Return False
     EndIf
+  EndIf
+
+  If SafeHasForm(QuestItems, AObject)
+    Return False
   EndIf
 
   Return True
@@ -65,20 +86,11 @@ Function BuildAndProcessReferences(FormList AFilter)
 
   Int i = 0
 
-  While i < AFilter.GetSize()
-    If PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-      Loot = PlayerRef.FindAllReferencesWithKeyword(AFilter.GetAt(i), Radius.GetValue())
+  While (i < AFilter.GetSize()) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+    Loot = PlayerRef.FindAllReferencesWithKeyword(AFilter.GetAt(i), Radius.GetValue())
 
-      If Loot.Length > 0
-        Loot = FilterLootArray(Loot)
-      EndIf
-
-      If Loot.Length > 0
-        TryLootObjects(Loot)  ; `Loot` will be cleared!
-      EndIf
-    Else
-      ; just try to start a new timer, no need to finish loop
-      Return
+    If Loot.Length > 0
+      TryLootObjects(Loot)  ; `Loot` will be cleared!
     EndIf
 
     i += 1
@@ -87,16 +99,23 @@ EndFunction
 
 Function TryLootObjects(ObjectReference[] ALoot)
   Int i = 0
-  Bool bContinue = True
 
-  While (i < ALoot.Length) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+  While (i < ALoot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+    ObjectReference Item = ALoot[i] as ObjectReference
 
-    If bContinue
-      ObjectReference Item = ALoot[i] as ObjectReference
+    If Item && ItemCanBeProcessed(Item)
+      Actor NPC = Item as Actor
 
-      If Item
-        LootObject(Item)
+      If NPC.IsDead()
+        If bPlayerKillerOnly
+          If NPC.GetKiller() == PlayerRef
+            TryLootObject(Item)
+            TryToDisableBody(Item)
+          EndIf
+        Else
+          TryLootObject(Item)
+          TryToDisableBody(Item)
+        EndIf
       EndIf
     EndIf
 
@@ -106,84 +125,15 @@ Function TryLootObjects(ObjectReference[] ALoot)
   ALoot.Clear()
 EndFunction
 
-Function AddObjectToObjectReferenceArray(ObjectReference AContainer, ObjectReference[] ALoot)
-  ; exclude empty containers
-  If AContainer is Actor
-    ; note: GetItemCount(None) counts non-playable items so we need to account for non-playable items
-    If (AContainer.GetItemCount(None) - AContainer.GetItemCount(NonPlayableItems)) <= 0
-      Return
-    EndIf
-  EndIf
-
-  ; exclude quest items that are explicitly excluded
-  If SafeHasForm(QuestItems, AContainer)
-    Return
-  EndIf
-
-  Bool bAllowStealing = IntToBool(AutoLoot_Setting_AllowStealing)
-  Bool bLootOnlyOwned = IntToBool(AutoLoot_Setting_LootOnlyOwned)
-
-  AddObjectToArray(ALoot, AContainer, PlayerRef, bAllowStealing, bLootOnlyOwned)
-EndFunction
-
-ObjectReference[] Function FilterLootArray(ObjectReference[] ALoot)
-  ObjectReference[] Result = new ObjectReference[0]
-
-  If ALoot.Length == 0
-    Return Result
-  EndIf
-
-  Int i = 0
-  Bool bContinue = True
-
-  While (i < ALoot.Length) && bContinue
-    bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-
-    If bContinue
-      ObjectReference Item = ALoot[i]
-
-      If Item
-        If ItemCanBeProcessed(Item)
-          Actor NPC = Item as Actor
-
-          If NPC && (NPC != PlayerRef)
-            If NPC.IsDead()
-              If IntToBool(AutoLoot_Setting_PlayerKillerOnly)
-                If NPC.GetKiller() == PlayerRef
-                  AddObjectToObjectReferenceArray(Item, Result)
-                  TryToDisableBody(Item)
-                EndIf
-              Else
-                AddObjectToObjectReferenceArray(Item, Result)
-                TryToDisableBody(Item)
-              EndIf
-            EndIf
-          EndIf
-        EndIf
-      EndIf
-    EndIf
-
-    i += 1
-  EndWhile
-
-  Return Result
-EndFunction
-
-Function LootObject(ObjectReference AObject)
-  If (AObject == None) || (DummyActor == None)
-    Return
-  EndIf
-
-  Bool bStealingIsHostile = IntToBool(AutoLoot_Setting_StealingIsHostile)
-
-  If IntToBool(AutoLoot_Setting_AllowStealing)
+Function _LootObject(ObjectReference AObject)
+  If bAllowStealing
     If !bStealingIsHostile && PlayerRef.WouldBeStealing(AObject)
       AObject.SetActorRefOwner(PlayerRef)
     EndIf
   EndIf
 
-  If IntToBool(AutoLoot_Setting_TakeAll)
-    AObject.RemoveAllItems(DummyActor, IntToBool(AutoLoot_Setting_AllowStealing) && bStealingIsHostile)
+  If bTakeAll
+    AObject.RemoveAllItems(DummyActor, bAllowStealing && bStealingIsHostile)
   Else
     LootObjectByPerk(PlayerRef, Perks, Filters, AObject, DummyActor)
 
@@ -203,18 +153,55 @@ Function LootObject(ObjectReference AObject)
   TryToDisableBody(AObject)
 EndFunction
 
-Function TryToDisableBody(ObjectReference AContainer)
+Function TryLootObject(ObjectReference AObject)
+  ; add only owned items when Auto Steal is enabled and mode is set to Owned Only
+  If bAllowStealing
+    ; special logic for only owned option
+    If bLootOnlyOwned
+      ; loot only owned items
+      If PlayerRef.WouldBeStealing(AObject)
+        _LootObject(AObject)
+        Return
+      Else
+        ; don't loot unowned items
+        Return
+      EndIf
+    EndIf
+
+    ; otherwise, add all items when Auto Steal is enabled and mode is set to Owned and Unowned
+    _LootObject(AObject)
+    Return
+  EndIf
+
+  ; loot only unowned items because Allow Stealing is off
+  If !PlayerRef.WouldBeStealing(AObject)
+    _LootObject(AObject)
+  EndIf
+EndFunction
+
+Function TryToDisableBody(ObjectReference AObject)
   If !IntToBool(AutoLoot_Setting_RemoveBodiesOnLoot)
     Return
   EndIf
 
-  If (AContainer.GetItemCount(None) - AContainer.GetItemCount(NonPlayableItems)) > 0
+  If (AObject.GetItemCount(None) - AObject.GetItemCount(NonPlayableItems)) > 0
     Return
   EndIf
 
-  AContainer.DisableNoWait()
-  AContainer.Delete()
+  AObject.DisableNoWait()
+  AObject.Delete()
 EndFunction
+
+; -----------------------------------------------------------------------------
+; VARIABLES
+; -----------------------------------------------------------------------------
+
+Bool bAllowStealing     = False
+Bool bLootOnlyOwned     = False
+Bool bLootSettlements   = False
+Bool bPlayerKillerOnly  = False
+Bool bStealingIsHostile = False
+Bool bTakeAll           = False
 
 ; -----------------------------------------------------------------------------
 ; PROPERTIES
