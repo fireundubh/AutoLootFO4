@@ -25,20 +25,15 @@ EndEvent
 ; -----------------------------------------------------------------------------
 
 Function BuildAndProcessReferences(FormList AKeywords)
-	ObjectReference[] Actors = None
+	ObjectReference[] Actors = new ObjectReference[0]
 
 	Int i = 0
-	Bool bContinue = True
 
-	While (i < AKeywords.GetSize()) && bContinue
-	  bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+	While (i < AKeywords.GetSize()) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+		Actors = PlayerRef.FindAllReferencesWithKeyword(AKeywords.GetAt(i), 4096.0)
 
-		If bContinue
-			Actors = PlayerRef.FindAllReferencesWithKeyword(AKeywords.GetAt(i), 4096.0)
-
-			If Actors && Actors.Length > 0
-				AddKeywordToActorsInArray(NoDisintegrate, Actors)
-			EndIf
+		If Actors.Length > 0
+			AddKeywordToActorsInArray(NoDisintegrate, Actors)
 		EndIf
 
 		i += 1
@@ -47,20 +42,15 @@ EndFunction
 
 Function AddKeywordToActorsInArray(Keyword AKeyword, ObjectReference[] AActors)
 	Int i = 0
-	Bool bContinue = True
 
-	While (i < AActors.Length) && bContinue
-		bContinue = PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+	While (i < AActors.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+		ObjectReference NPC = AActors[i] as ObjectReference
 
-		If bContinue
-			ObjectReference NPC = AActors[i] as ObjectReference
+		If NPC && (NPC != PlayerRef)
+			Actor ActorRef = NPC as Actor
 
-			If NPC && (NPC != PlayerRef)
-				Actor ActorRef = NPC as Actor
-
-				If !ActorRef.IsEssential() && !(ActorRef.GetBaseObject() as ActorBase).IsProtected() && !ActorRef.HasKeyword(AKeyword)
-					ActorRef.AddKeyword(AKeyword)
-				EndIf
+			If !ActorRef.IsEssential() && !(ActorRef.GetBaseObject() as ActorBase).IsProtected() && !ActorRef.HasKeyword(AKeyword)
+				ActorRef.AddKeyword(AKeyword)
 			EndIf
 		EndIf
 
