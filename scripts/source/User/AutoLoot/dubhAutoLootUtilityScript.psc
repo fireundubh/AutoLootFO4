@@ -21,32 +21,6 @@ Bool Function SafeHasForm(FormList AList, Form AForm) Global
   Return AList.GetSize() > 0 && AList.HasForm(AForm)
 EndFunction
 
-Function AddObjectToArray(ObjectReference[] ALoot, ObjectReference AObject, Actor APlayer, Bool AAllowStealing, Bool ALootOnlyOwned) Global
-  ; add only owned items when Auto Steal is enabled and mode is set to Owned Only
-  If AAllowStealing
-    ; special logic for only owned option
-    If ALootOnlyOwned
-      ; loot only owned items
-      If APlayer.WouldBeStealing(AObject)
-        ALoot.Add(AObject, 1)
-        Return
-      Else
-        ; don't loot unowned items
-        Return
-      EndIf
-    EndIf
-
-    ; otherwise, add all items when Auto Steal is enabled and mode is set to Owned and Unowned
-    ALoot.Add(AObject, 1)
-    Return
-  EndIf
-
-  ; loot only unowned items because Allow Stealing is off
-  If !APlayer.WouldBeStealing(AObject)
-    ALoot.Add(AObject, 1)
-  EndIf
-EndFunction
-
 Function LootObjectByPerk(Actor APlayer, Perk[] APerks, FormList[] AFilters, ObjectReference AContainer, ObjectReference AOtherContainer) Global
   Int i = 0
 
