@@ -161,9 +161,9 @@ Group Globals
   GlobalVariable Property Delay Auto Mandatory
   GlobalVariable Property Radius Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_AllowStealing Auto Mandatory
-  GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_LootOnlyOwned Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_LootSettlements Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Mandatory
 EndGroup
 
 Group Timer

@@ -7,8 +7,7 @@ Function Fragment_Terminal_01(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Acid (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(0) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[0].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -19,8 +18,7 @@ Function Fragment_Terminal_02(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Acid (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(0) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[0].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -31,8 +29,7 @@ Function Fragment_Terminal_03(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Adhesive (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(1) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[1].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -43,8 +40,7 @@ Function Fragment_Terminal_04(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Adhesive (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(1) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[1].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -55,8 +51,7 @@ Function Fragment_Terminal_05(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Aluminum (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(2) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[2].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -67,8 +62,7 @@ Function Fragment_Terminal_06(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Aluminum (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(2) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[2].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -79,8 +73,7 @@ Function Fragment_Terminal_07(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Antiseptic (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(3) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[3].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -91,8 +84,7 @@ Function Fragment_Terminal_08(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Antiseptic (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(3) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[3].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -103,8 +95,7 @@ Function Fragment_Terminal_09(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Asbestos (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(4) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[4].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -115,8 +106,7 @@ Function Fragment_Terminal_10(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Asbestos (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(4) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[4].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -127,8 +117,7 @@ Function Fragment_Terminal_11(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Ballistic Fiber (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(5) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[5].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -139,8 +128,7 @@ Function Fragment_Terminal_12(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Ballistic Fiber (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(5) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[5].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -151,8 +139,7 @@ Function Fragment_Terminal_13(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Bone (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(6) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[6].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -163,8 +150,7 @@ Function Fragment_Terminal_14(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Bone (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(6) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[6].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -175,8 +161,7 @@ Function Fragment_Terminal_15(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Ceramic (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(7) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[7].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -187,8 +172,7 @@ Function Fragment_Terminal_16(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Ceramic (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(7) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[7].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -199,8 +183,7 @@ Function Fragment_Terminal_17(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Circuitry (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(8) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[8].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -211,8 +194,7 @@ Function Fragment_Terminal_18(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Circuitry (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(8) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[8].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -223,8 +205,7 @@ Function Fragment_Terminal_19(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Cloth (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(9) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[9].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -235,8 +216,7 @@ Function Fragment_Terminal_20(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Cloth (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(9) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[9].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -247,8 +227,7 @@ Function Fragment_Terminal_21(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Concrete (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(10) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[10].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -259,8 +238,7 @@ Function Fragment_Terminal_22(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Concrete (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(10) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[10].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -271,8 +249,7 @@ Function Fragment_Terminal_23(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Copper (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(11) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[11].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -283,8 +260,7 @@ Function Fragment_Terminal_24(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Copper (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(11) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[11].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -295,8 +271,7 @@ Function Fragment_Terminal_25(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Cork (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(12) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[12].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -307,8 +282,7 @@ Function Fragment_Terminal_26(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Cork (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(12) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[12].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -319,8 +293,7 @@ Function Fragment_Terminal_27(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Crystal (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(13) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[13].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -331,8 +304,7 @@ Function Fragment_Terminal_28(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Crystal (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(13) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[13].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -343,8 +315,7 @@ Function Fragment_Terminal_29(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Fertilizer (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(14) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[14].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -355,8 +326,7 @@ Function Fragment_Terminal_30(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Fertilizer (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(14) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[14].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -367,8 +337,7 @@ Function Fragment_Terminal_31(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Fiber Optics (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(15) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[15].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -379,8 +348,7 @@ Function Fragment_Terminal_32(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Fiber Optics (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(15) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[15].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -391,8 +359,7 @@ Function Fragment_Terminal_33(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Fiberglass (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(16) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[16].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -403,8 +370,7 @@ Function Fragment_Terminal_34(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Fiberglass (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(16) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[16].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -415,8 +381,7 @@ Function Fragment_Terminal_35(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Gears (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(17) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[17].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -427,8 +392,7 @@ Function Fragment_Terminal_36(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Gears (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(17) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[17].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -439,8 +403,7 @@ Function Fragment_Terminal_37(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Glass (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(18) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[18].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -451,8 +414,7 @@ Function Fragment_Terminal_38(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Glass (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(18) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[18].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -463,8 +425,7 @@ Function Fragment_Terminal_39(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Gold (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(19) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[19].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -475,8 +436,7 @@ Function Fragment_Terminal_40(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Gold (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(19) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[19].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -487,8 +447,7 @@ Function Fragment_Terminal_41(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Lead (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(20) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[20].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -499,8 +458,7 @@ Function Fragment_Terminal_42(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Lead (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(20) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[20].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -511,8 +469,7 @@ Function Fragment_Terminal_43(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Leather (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(21) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[21].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -523,8 +480,7 @@ Function Fragment_Terminal_44(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Leather (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(21) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[21].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -535,8 +491,7 @@ Function Fragment_Terminal_45(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Nuclear Material (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(22) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[22].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -547,8 +502,7 @@ Function Fragment_Terminal_46(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Nuclear Material (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(22) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[22].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -559,8 +513,7 @@ Function Fragment_Terminal_47(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Oil (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(23) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[23].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -571,8 +524,7 @@ Function Fragment_Terminal_48(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Oil (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(23) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[23].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -583,8 +535,7 @@ Function Fragment_Terminal_49(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Plastic (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(24) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[24].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -595,8 +546,7 @@ Function Fragment_Terminal_50(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Plastic (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(24) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[24].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -607,8 +557,7 @@ Function Fragment_Terminal_51(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Rubber (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(25) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[25].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -619,8 +568,7 @@ Function Fragment_Terminal_52(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Rubber (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(25) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[25].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -631,8 +579,7 @@ Function Fragment_Terminal_53(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Screws (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(26) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[26].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -643,8 +590,7 @@ Function Fragment_Terminal_54(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Screws (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(26) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[26].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -655,8 +601,7 @@ Function Fragment_Terminal_55(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Silver (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(27) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[27].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -667,8 +612,7 @@ Function Fragment_Terminal_56(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Silver (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(27) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[27].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -679,8 +623,7 @@ Function Fragment_Terminal_57(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Springs (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(28) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[28].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -691,8 +634,7 @@ Function Fragment_Terminal_58(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Springs (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(28) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[28].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -703,8 +645,7 @@ Function Fragment_Terminal_59(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Steel (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(29) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[29].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -715,8 +656,7 @@ Function Fragment_Terminal_60(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Steel (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(29) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[29].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -727,8 +667,7 @@ Function Fragment_Terminal_61(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Wood (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(30) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Components[30].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -739,12 +678,11 @@ Function Fragment_Terminal_62(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Wood (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Components.GetAt(30) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Components[30].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
-FormList Property AutoLoot_Globals_Components Auto Const
+GlobalVariable[] Property AutoLoot_Globals_Components Auto Const

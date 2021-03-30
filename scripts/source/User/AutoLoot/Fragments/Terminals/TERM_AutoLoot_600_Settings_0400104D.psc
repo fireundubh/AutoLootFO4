@@ -7,8 +7,7 @@ Function Fragment_Terminal_01(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Filter Mode (take all enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(0) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_TakeAll.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -19,8 +18,7 @@ Function Fragment_Terminal_02(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Filter Mode (take any enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(0) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_TakeAll.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -31,8 +29,7 @@ Function Fragment_Terminal_03(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Loot Notifications (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(8) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_DisableNotifications.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -43,8 +40,7 @@ Function Fragment_Terminal_04(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Loot Notifications (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(8) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_DisableNotifications.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -55,8 +51,7 @@ Function Fragment_Terminal_05(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Loot Settlements (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(6) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_LootSettlements.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -67,8 +62,7 @@ Function Fragment_Terminal_06(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Loot Settlements (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(6) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_LootSettlements.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -79,8 +73,7 @@ Function Fragment_Terminal_07(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Loot Only Actors Killed by Player (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(9) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_PlayerKillerOnly.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -91,8 +84,7 @@ Function Fragment_Terminal_08(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Loot Only Actors Killed by Player (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(9) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_PlayerKillerOnly.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -103,8 +95,7 @@ Function Fragment_Terminal_09(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		EXPERIMENTAL: Remove Bodies On Loot (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(4) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_RemoveBodiesOnLoot.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -115,12 +106,15 @@ Function Fragment_Terminal_10(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		EXPERIMENTAL: Remove Bodies On Loot (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(4) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_RemoveBodiesOnLoot.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
-FormList Property AutoLoot_Globals_Settings Auto Const
+GlobalVariable Property AutoLoot_Setting_DisableNotifications Auto Const
+GlobalVariable Property AutoLoot_Setting_LootSettlements Auto Const
+GlobalVariable Property AutoLoot_Setting_PlayerKillerOnly Auto Const
+GlobalVariable Property AutoLoot_Setting_RemoveBodiesOnLoot Auto Const
+GlobalVariable Property AutoLoot_Setting_TakeAll Auto Const

@@ -7,8 +7,7 @@ Function Fragment_Terminal_01(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Common (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Valuables.GetAt(0) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Valuables[0].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -19,8 +18,7 @@ Function Fragment_Terminal_02(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Common (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Valuables.GetAt(0) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Valuables[0].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -31,8 +29,7 @@ Function Fragment_Terminal_03(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Uncommon (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Valuables.GetAt(1) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Valuables[1].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -43,8 +40,7 @@ Function Fragment_Terminal_04(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Uncommon (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Valuables.GetAt(1) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Valuables[1].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -55,8 +51,7 @@ Function Fragment_Terminal_05(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Rare (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Valuables.GetAt(2) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Valuables[2].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -67,8 +62,7 @@ Function Fragment_Terminal_06(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Rare (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Valuables.GetAt(2) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Valuables[2].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -79,8 +73,7 @@ Function Fragment_Terminal_07(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Component Scrap (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Valuables.GetAt(3) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Globals_Valuables[3].SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -91,12 +84,11 @@ Function Fragment_Terminal_08(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Component Scrap (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Valuables.GetAt(3) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Globals_Valuables[3].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
-FormList Property AutoLoot_Globals_Valuables Auto Const
+GlobalVariable[] Property AutoLoot_Globals_Valuables Auto Const

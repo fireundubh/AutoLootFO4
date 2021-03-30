@@ -229,13 +229,13 @@ Group Globals
   GlobalVariable Property Destination Auto Mandatory
   GlobalVariable Property Delay Auto Mandatory
   GlobalVariable Property Radius Auto Mandatory
-  GlobalVariable Property AutoLoot_Setting_TakeAll Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_AllowStealing Auto Mandatory
-  GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_LootOnlyOwned Auto Mandatory
-  GlobalVariable Property AutoLoot_Setting_RemoveBodiesOnLoot Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_LootSettlements Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_PlayerKillerOnly Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_RemoveBodiesOnLoot Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_TakeAll Auto Mandatory
 EndGroup
 
 Group Timer

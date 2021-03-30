@@ -7,8 +7,7 @@ Function Fragment_Terminal_01(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		---- Pause ----
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(7) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_PauseLooting.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -19,12 +18,11 @@ Function Fragment_Terminal_02(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		---- Resume ----
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(7) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_PauseLooting.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
-FormList Property AutoLoot_Globals_Settings Auto Const
+GlobalVariable Property AutoLoot_Setting_PauseLooting Auto Const

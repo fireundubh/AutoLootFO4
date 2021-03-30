@@ -7,8 +7,7 @@ Function Fragment_Terminal_01(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Auto Lockpick (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(5) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_UnlockContainers.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -19,8 +18,7 @@ Function Fragment_Terminal_02(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Auto Lockpick (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(5) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_UnlockContainers.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -31,8 +29,7 @@ Function Fragment_Terminal_03(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Auto Steal (disabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(2) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_AllowStealing.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -43,8 +40,7 @@ Function Fragment_Terminal_04(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Auto Steal (enabled)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(2) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_AllowStealing.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -55,8 +51,7 @@ Function Fragment_Terminal_05(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Auto Steal Mode (only owned)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(3) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_LootOnlyOwned.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -67,8 +62,7 @@ Function Fragment_Terminal_06(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Auto Steal Mode (owned and unowned)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(3) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_LootOnlyOwned.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -79,8 +73,7 @@ Function Fragment_Terminal_07(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Auto Steal Reaction (hostile)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(1) as GlobalVariable
-kGlobal.SetValue(0)
+AutoLoot_Setting_StealingIsHostile.SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -91,12 +84,14 @@ Function Fragment_Terminal_08(ObjectReference akTerminalRef)
 ; ---------------------------------------------------------------------
 ; [ITXT]		Auto Steal Reaction (none)
 ; ---------------------------------------------------------------------
-GlobalVariable kGlobal = AutoLoot_Globals_Settings.GetAt(1) as GlobalVariable
-kGlobal.SetValue(1)
+AutoLoot_Setting_StealingIsHostile.SetValue(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
-FormList Property AutoLoot_Globals_Settings Auto Const
+GlobalVariable Property AutoLoot_Setting_AllowStealing Auto Const
+GlobalVariable Property AutoLoot_Setting_LootOnlyOwned Auto Const
+GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Const
+GlobalVariable Property AutoLoot_Setting_UnlockContainers Auto Const
