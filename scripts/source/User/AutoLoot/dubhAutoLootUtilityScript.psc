@@ -6,7 +6,14 @@ Bool Function IsPlayerControlled() Global
 EndFunction
 
 Bool Function IsObjectInteractable(ObjectReference AObject) Global
-  Return AObject.Is3DLoaded() && !AObject.IsDisabled() && !AObject.IsDeleted() && !AObject.IsDestroyed() && !AObject.IsActivationBlocked()
+  Bool Result = AObject.Is3DLoaded() && !AObject.IsDisabled() && !AObject.IsDeleted() && !AObject.IsDestroyed()
+
+  ; Caps Stashes are activation blocked on load but we don't care about that
+  If !(AObject.GetBaseObject() is Activator)
+    Result = Result && !AObject.IsActivationBlocked()
+  EndIf
+
+  Return Result
 EndFunction
 
 Bool Function IntToBool(GlobalVariable AGlobalVariable) Global
