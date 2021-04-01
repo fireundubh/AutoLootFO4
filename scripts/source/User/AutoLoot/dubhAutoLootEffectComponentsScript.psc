@@ -66,38 +66,32 @@ Bool Function ItemCanBeProcessed(ObjectReference AObject)
     Return False
   EndIf
 
-  ; references don't have component data, so we need to use the base object
-  MiscObject Item = AObject.GetBaseObject() as MiscObject
-
-  Int i = 0
-
-  While (i < AutoLoot_Globals_Components.Length)
-    If IntToBool(AutoLoot_Globals_Components[i])
-      If Item.GetObjectComponentCount(AutoLoot_Filter_Components[i]) > 0
-        Return True
-      EndIf
-    EndIf
-
-    i += 1
-  EndWhile
-
-  Return False
+  Return True
 EndFunction
 
-Function BuildAndProcessReferences(FormList AFilter)
-  ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
-
-  If Loot.Length == 0
-    Return
-  EndIf
-
+Function BuildAndProcessReferences(FormList[] AFilter)
   Int i = 0
 
-  While (i < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
-    ObjectReference Item = Loot[i] as ObjectReference
+  While (i < AutoLoot_Globals_Components.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+    If IntToBool(AutoLoot_Globals_Components[i])
+      ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter[i], Radius.GetValue())
 
-    If Item && (Item.GetContainer() == None) && ItemCanBeProcessed(Item)
-      TryLootObject(Item)
+      If Loot.Length == 0
+        Return
+      EndIf
+
+      Int j = 0
+
+      While (j < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+        ObjectReference Item = Loot[j] as ObjectReference
+
+        If Item && (Item.GetContainer() == None) && ItemCanBeProcessed(Item)
+          TryLootObject(Item)
+        EndIf
+
+        j += 1
+      EndWhile
+
     EndIf
 
     i += 1
@@ -159,10 +153,9 @@ Group Actors
 EndGroup
 
 Group Forms
-  FormList Property Filter Auto Mandatory
+  FormList[] Property Filter Auto Mandatory
   FormList Property Locations Auto Mandatory
   FormList Property QuestItems Auto Mandatory
-  Component[] Property AutoLoot_Filter_Components Auto Mandatory
   GlobalVariable[] Property AutoLoot_Globals_Components Auto Mandatory
 EndGroup
 
