@@ -160,10 +160,10 @@ EndGroup
 
 Group Forms
   FormList Property Filter Auto Mandatory
+  FormList Property Locations Auto Mandatory
   FormList Property QuestItems Auto Mandatory
   Component[] Property AutoLoot_Filter_Components Auto Mandatory
   GlobalVariable[] Property AutoLoot_Globals_Components Auto Mandatory
-  FormList Property Locations Auto Mandatory
 EndGroup
 
 Group Globals

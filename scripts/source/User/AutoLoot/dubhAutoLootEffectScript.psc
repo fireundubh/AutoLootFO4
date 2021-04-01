@@ -16,6 +16,7 @@ Event OnTimer(Int aiTimerID)
     If IsPlayerControlled()
       bAllowStealing     = IntToBool(AutoLoot_Setting_AllowStealing)
       bLootOnlyOwned     = IntToBool(AutoLoot_Setting_LootOnlyOwned)
+      bLootSettlements   = IntToBool(AutoLoot_Setting_LootSettlements)
       bStealingIsHostile = IntToBool(AutoLoot_Setting_StealingIsHostile)
 
       BuildAndProcessReferences(Filter)
@@ -47,11 +48,15 @@ Function LogError(String AText) DebugOnly
 EndFunction
 
 Bool Function ItemCanBeProcessed(ObjectReference AObject)
+  If (AObject.GetContainer() != None)
+    Return False
+  EndIf
+
   If !IsObjectInteractable(AObject)
     Return False
   EndIf
 
-  If !IntToBool(AutoLoot_Setting_LootSettlements)
+  If !bLootSettlements
     If SafeHasForm(Locations, AObject.GetCurrentLocation())
       Return False
     EndIf
@@ -126,6 +131,7 @@ EndFunction
 
 Bool bAllowStealing     = False
 Bool bLootOnlyOwned     = False
+Bool bLootSettlements   = False
 Bool bStealingIsHostile = False
 
 ; -----------------------------------------------------------------------------
@@ -148,9 +154,9 @@ Group Globals
   GlobalVariable Property Delay Auto Mandatory
   GlobalVariable Property Radius Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_AllowStealing Auto Mandatory
-  GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_LootOnlyOwned Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_LootSettlements Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Mandatory
 EndGroup
 
 Group Timer

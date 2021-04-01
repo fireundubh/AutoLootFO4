@@ -57,6 +57,10 @@ Function LogError(String AText) DebugOnly
 EndFunction
 
 Bool Function ItemCanBeProcessed(ObjectReference AObject)
+  If (AObject.GetContainer() != None)
+    Return False
+  EndIf
+
   If !IsObjectInteractable(AObject)
     Return False
   EndIf
@@ -150,12 +154,12 @@ EndGroup
 
 Group Forms
   FormList[] Property Filter Auto Mandatory
-  GlobalVariable[] Property Filter_Globals Auto Mandatory
-  FormList Property QuestItems Auto Mandatory
   FormList Property Locations Auto Mandatory
+  FormList Property QuestItems Auto Mandatory
 EndGroup
 
 Group Globals
+  GlobalVariable[] Property Filter_Globals Auto Mandatory
   GlobalVariable Property Destination Auto Mandatory
   GlobalVariable Property Delay Auto Mandatory
   GlobalVariable Property Radius Auto Mandatory
