@@ -10,7 +10,7 @@ Bool Function IsObjectInteractable(ObjectReference AObject) Global
 
   ; Caps Stashes are activation blocked on load but we don't care about that
   If !(AObject.GetBaseObject() is Activator)
-    Result = Result && !AObject.IsActivationBlocked()
+    Return Result && !AObject.IsActivationBlocked()
   EndIf
 
   Return Result

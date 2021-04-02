@@ -55,8 +55,16 @@ Bool Function ItemCanBeProcessed(ObjectReference AObject)
   EndIf
 
   ; exclude empty containers
-  ; note: GetItemCount(None) counts non-playable items so we need to account for non-playable items
-  If (AObject.GetItemCount(None) - AObject.GetItemCount(NonPlayableItems)) <= 0
+  Int TotalItemCount = AObject.GetItemCount(None)
+
+  If TotalItemCount <= 0
+    Return False
+  EndIf
+
+  ; GetItemCount(None) counts non-playable items so we need to account for non-playable items
+  Int NonPlayableItemCount = AObject.GetItemCount(NonPlayableItems)
+
+  If (NonPlayableItemCount > 0) && ((TotalItemCount - NonPlayableItemCount) <= 0)
     Return False
   EndIf
 
@@ -83,6 +91,10 @@ Function BuildAndProcessReferences(FormList AFilter)
   ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
 
   If Loot.Length == 0
+    Return
+  EndIf
+
+  If (Loot.Length == 1) && (Loot[0] == PlayerRef)
     Return
   EndIf
 
