@@ -81,7 +81,7 @@ Function BuildAndProcessReferences(FormList AFilter)
   While (i < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
     ObjectReference Item = Loot[i] as ObjectReference
 
-    If Item && (Item.GetContainer() == None) && ItemCanBeProcessed(Item)
+    If Item && ItemCanBeProcessed(Item)
       TryLootObject(Item)
     EndIf
 
@@ -96,7 +96,13 @@ Function _LootObject(ObjectReference AObject)
     EndIf
   EndIf
 
-  AObject.Activate(DummyActor, False)
+  If AObject.Activate(DummyActor, False)
+    Return
+  EndIf
+
+  If AObject.Activate(PlayerRef, False)
+    Return
+  EndIf
 EndFunction
 
 Function TryLootObject(ObjectReference AObject)
