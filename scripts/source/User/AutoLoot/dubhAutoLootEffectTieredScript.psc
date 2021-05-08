@@ -15,13 +15,14 @@ Event OnTimer(Int aiTimerID)
   If PlayerRef.HasPerk(ActivePerk)
     If IsPlayerControlled()
       bAllowStealing     = IntToBool(AutoLoot_Setting_AllowStealing)
+      bLootInCombat      = IntToBool(AutoLoot_Setting_LootInCombat)
       bLootOnlyOwned     = IntToBool(AutoLoot_Setting_LootOnlyOwned)
       bLootSettlements   = IntToBool(AutoLoot_Setting_LootSettlements)
       bStealingIsHostile = IntToBool(AutoLoot_Setting_StealingIsHostile)
 
       Int i = 0
 
-      While (i < Filter_Globals.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+      While (i < Filter_Globals.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled() && CanPlayerLootInCombat()
 
         If IntToBool(Filter_Globals[i])
           BuildAndProcessReferences(Filter[i])
@@ -87,7 +88,7 @@ Function BuildAndProcessReferences(FormList AFilter)
 
   Int i = 0
 
-  While (i < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled()
+  While (i < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled() && CanPlayerLootInCombat()
     ObjectReference Item = Loot[i] as ObjectReference
 
     If Item && (Item.GetContainer() == None) && ItemCanBeProcessed(Item)
@@ -134,11 +135,20 @@ Function TryLootObject(ObjectReference AObject)
   EndIf
 EndFunction
 
+Bool Function CanPlayerLootInCombat()
+  If PlayerRef.IsInCombat()
+    Return bLootInCombat
+  EndIf
+
+  Return True
+EndFunction
+
 ; -----------------------------------------------------------------------------
 ; VARIABLES
 ; -----------------------------------------------------------------------------
 
 Bool bAllowStealing     = False
+Bool bLootInCombat      = False
 Bool bLootOnlyOwned     = False
 Bool bLootSettlements   = False
 Bool bStealingIsHostile = False
@@ -164,6 +174,7 @@ Group Globals
   GlobalVariable Property Delay Auto Mandatory
   GlobalVariable Property Radius Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_AllowStealing Auto Mandatory
+  GlobalVariable Property AutoLoot_Setting_LootInCombat Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_LootOnlyOwned Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_LootSettlements Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_StealingIsHostile Auto Mandatory

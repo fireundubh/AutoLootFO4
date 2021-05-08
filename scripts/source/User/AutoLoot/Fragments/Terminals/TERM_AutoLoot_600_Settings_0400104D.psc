@@ -111,9 +111,32 @@ AutoLoot_Setting_RemoveBodiesOnLoot.SetValue(0)
 EndFunction
 ;END FRAGMENT
 
+;BEGIN FRAGMENT Fragment_Terminal_11
+Function Fragment_Terminal_11(ObjectReference akTerminalRef)
+;BEGIN CODE
+; ---------------------------------------------------------------------
+; [ITXT]		Loot in Combat (disabled)
+; ---------------------------------------------------------------------
+AutoLoot_Setting_LootInCombat.SetValue(1)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_Terminal_12
+Function Fragment_Terminal_12(ObjectReference akTerminalRef)
+;BEGIN CODE
+; ---------------------------------------------------------------------
+; [ITXT]		Loot in Combat (enabled)
+; ---------------------------------------------------------------------
+AutoLoot_Setting_LootInCombat.SetValue(0)
+;END CODE
+EndFunction
+;END FRAGMENT
+
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
 GlobalVariable Property AutoLoot_Setting_DisableNotifications Auto Const
+GlobalVariable Property AutoLoot_Setting_LootInCombat Auto Const
 GlobalVariable Property AutoLoot_Setting_LootSettlements Auto Const
 GlobalVariable Property AutoLoot_Setting_PlayerKillerOnly Auto Const
 GlobalVariable Property AutoLoot_Setting_RemoveBodiesOnLoot Auto Const
