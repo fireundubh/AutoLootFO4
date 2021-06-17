@@ -2,43 +2,50 @@
   xmlns="PapyrusProject.xsd"
   Game="FO4"
   Flags="Institute_Papyrus_Flags.flg"
-  Output="@modpath\scripts"
-  Optimize="true" Release="true" Final="true" Anonymize="true" Package="true" Zip="true">
+  Output="@OutputPath\Scripts"
+  Optimize="true"
+  Release="true"
+  Final="true"
+  Anonymize="true"
+  Package="true"
+  Zip="true">
   <Variables>
-    <Variable Name="modname" Value="Auto Loot"/>
-    <Variable Name="namespace" Value="AutoLoot"/>
-    <Variable Name="modpath" Value="F:\repos\mods\fallout4\@modname"/>
-    <Variable Name="gamepath" Value="F:\SteamLibrary\steamapps\common\Fallout 4"/>
+    <Variable Name="Namespace" Value="AutoLoot"/>
+    <Variable Name="ModName" Value="Auto Loot"/>
+    <Variable Name="ModsPath" Value="F:\ModOrganizer\Games\Fallout4\mods"/>
+    <Variable Name="OutputPath" Value="@ModsPath\@ModName"/>
+    <Variable Name="GamePath" Value="$Fallout4Path"/>
+    <Variable Name="SourceDir" Value="Scripts\Source"/>
   </Variables>
   <Imports>
-    <Import>@modpath\scripts\Source\User</Import>
-    <Import>@gamepath\Data\Scripts\Source\Base</Import>
+    <Import>@OutputPath\@SourceDir\User</Import>
+    <Import>@GamePath\Data\@SourceDir\Base</Import>
   </Imports>
   <Scripts>
-    <Script>@namespace\dubhAutoLootUtilityScript.psc</Script>
-    <Script>@namespace\dubhAutoLootDummyScript.psc</Script>
-    <Script>@namespace\dubhAutoLootEffectBodiesScript.psc</Script>
-    <Script>@namespace\dubhAutoLootEffectComponentsScript.psc</Script>
-    <Script>@namespace\dubhAutoLootEffectContainersScript.psc</Script>
-    <Script>@namespace\dubhAutoLootEffectScript.psc</Script>
-    <Script>@namespace\dubhAutoLootEffectTieredScript.psc</Script>
-    <Script>@namespace\dubhAutoLootQuestScript.psc</Script>
-    <Script>@namespace\dubhAutoLootNoDisintegrateScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootUtilityScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootDummyScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootEffectBodiesScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootEffectComponentsScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootEffectContainersScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootEffectFloraScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootEffectScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootEffectTieredScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootQuestScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootNoDisintegrateScript.psc</Script>
   </Scripts>
   <Folders>
-    <Folder NoRecurse="true">@namespace\Fragments\Terminals</Folder>
+    <Folder NoRecurse="true">@Namespace\Fragments\Terminals</Folder>
   </Folders>
-  <Packages Output="@modpath">
-    <Package Name="@modname - Main" RootDir="@modpath">
-      <Include NoRecurse="false">**/*.pex</Include>
+  <Packages Output="@OutputPath">
+    <Package Name="@ModName - Main" RootDir="@OutputPath">
+      <Match In="Scripts">*.pex</Match>
     </Package>
   </Packages>
-  <ZipFiles Output="@modpath">
-    <ZipFile Name="@modname" RootDir="@modpath" Compression="deflate">
-      <Include>@modpath\Auto Loot.esp</Include>
-      <Include>@modpath\Auto Loot - Main.ba2</Include>
-      <Include>@modpath\Auto Loot - UFO4P Components Patch.esp</Include>
-      <Include>@modpath\Non-Playable Flags Patch.esp</Include>
+  <ZipFiles Output="@OutputPath">
+    <ZipFile Name="@ModName" RootDir="@OutputPath" Compression="deflate">
+      <Match NoRecurse="true">*.esp|-*UFO4P*</Match>
+      <Match NoRecurse="true">*.ba2</Match>
+      <Include Path="optional" NoRecurse="true">@OutputPath\Auto Loot - UFO4P Components Patch.esp</Include>
     </ZipFile>
   </ZipFiles>
 </PapyrusProject>
