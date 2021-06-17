@@ -77,20 +77,17 @@ Function BuildAndProcessReferences(FormList[] AFilter)
     If IntToBool(AutoLoot_Globals_Components[i])
       ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter[i], Radius.GetValue())
 
-      If Loot.Length > 0
-        Int j = 0
+      Int j = 0
 
-        While (j < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled() && CanPlayerLootInCombat()
-          ObjectReference Item = Loot[j] as ObjectReference
+      While (j < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled() && CanPlayerLootInCombat()
+        ObjectReference Item = Loot[j] as ObjectReference
 
-          If Item && (Item.GetContainer() == None) && ItemCanBeProcessed(Item)
-            TryLootObject(Item)
-          EndIf
+        If Item && (Item.GetContainer() == None) && ItemCanBeProcessed(Item)
+          TryLootObject(Item)
+        EndIf
 
-          j += 1
-        EndWhile
-      EndIf
-
+        j += 1
+      EndWhile
     EndIf
 
     i += 1

@@ -82,10 +82,6 @@ EndFunction
 Function BuildAndProcessReferences(FormList AFilter)
   ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
 
-  If Loot.Length == 0
-    Return
-  EndIf
-
   Int i = 0
 
   While (i < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled() && CanPlayerLootInCombat()

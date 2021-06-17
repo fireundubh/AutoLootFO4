@@ -91,10 +91,6 @@ EndFunction
 Function BuildAndProcessReferences(FormList AFilter)
   ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
 
-  If Loot.Length == 0
-    Return
-  EndIf
-
   If (Loot.Length == 1) && (Loot[0] == PlayerRef)
     Return
   EndIf
