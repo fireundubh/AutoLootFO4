@@ -6,14 +6,21 @@ Bool Function IsPlayerControlled() Global
 EndFunction
 
 Bool Function IsObjectInteractable(ObjectReference AObject) Global
-  Bool Result = AObject.Is3DLoaded() && !AObject.IsDisabled() && !AObject.IsDeleted() && !AObject.IsDestroyed()
+  Bool result = AObject.Is3DLoaded() && !AObject.IsDisabled() && !AObject.IsDeleted()
 
-  ; Caps Stashes are activation blocked on load but we don't care about that
-  If !(AObject.GetBaseObject() is Activator)
-    Return Result && !AObject.IsActivationBlocked()
+  ; Caps Stashes, Bottlecap Mine caps, Money Shot caps, and Bobby Pin Boxes are activation blocked on load
+  Bool flag1 = True
+  If !(AObject.GetBaseObject() is Activator || AObject.GetBaseObject() is MiscObject)
+    flag1 = !AObject.IsActivationBlocked()
   EndIf
 
-  Return Result
+  ; some actors, like turrets, are destroyed when killed
+  Bool flag2 = True
+  If !(AObject.GetBaseObject() is Actor)
+    flag2 = !AObject.IsDestroyed()
+  EndIf
+
+  Return result && flag1 && flag2
 EndFunction
 
 Bool Function IntToBool(GlobalVariable AGlobalVariable) Global

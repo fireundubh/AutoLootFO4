@@ -49,7 +49,7 @@ Function LogError(String AText) DebugOnly
 EndFunction
 
 Bool Function ItemCanBeProcessed(ObjectReference AObject)
-  If (AObject.GetBaseObject() as Flora) == None
+  If !(AObject.GetBaseObject() is Flora || AObject.GetBaseObject() is Activator)
     Return False
   EndIf
 
@@ -68,20 +68,20 @@ Bool Function ItemCanBeProcessed(ObjectReference AObject)
     Return False
   EndIf
 
-  If !bLootSettlements
-    If SafeHasForm(Locations, AObject.GetCurrentLocation())
+  If SafeHasForm(Locations, AObject.GetCurrentLocation())
+    If !bLootSettlements
       LogInfo(AObject + " cannot be processed because object is in an excluded location")
       Return False
     EndIf
-  Else
+
     WorkshopObjectScript floraObj = AObject as WorkshopObjectScript
 
-    If floraObj
-      If !floraObj.IsActorAssigned()
-        LogInfo(AObject + " cannot be processed because workshop object is not assigned")
-        Return False
-      EndIf
+    If floraObj && !floraObj.IsActorAssigned()
+      LogInfo(AObject + " cannot be processed because workshop object is not assigned")
+      Return False
+    EndIf
 
+    If floraObj
       Float harvestTime = floraObj.GetValue(WorkshopParent.WorkshopFloraHarvestTime)
 
       If Utility.GetCurrentGameTime() <= harvestTime + 1.0
