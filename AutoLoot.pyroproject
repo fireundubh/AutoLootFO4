@@ -11,8 +11,9 @@
   Zip="true">
   <Variables>
     <Variable Name="Namespace" Value="AutoLoot"/>
+    <Variable Name="Version" Value="1_2_9_2"/>
     <Variable Name="ModName" Value="Auto Loot"/>
-    <Variable Name="ModsPath" Value="F:\ModOrganizer\Games\Fallout4\mods"/>
+    <Variable Name="ModsPath" Value="G:\ModOrganizer\Games\Fallout4\mods"/>
     <Variable Name="OutputPath" Value="@ModsPath\@ModName"/>
     <Variable Name="GamePath" Value="$Fallout4Path"/>
     <Variable Name="SourceDir" Value="Scripts\Source"/>
@@ -42,10 +43,10 @@
     </Package>
   </Packages>
   <ZipFiles Output="@OutputPath">
-    <ZipFile Name="@ModName" RootDir="@OutputPath" Compression="deflate">
+    <ZipFile Name="@Namespace-@Version" RootDir="@OutputPath">
       <Match NoRecurse="true">*.esp|-*UFO4P*</Match>
       <Match NoRecurse="true">*.ba2</Match>
-      <Include Path="optional" NoRecurse="true">@OutputPath\Auto Loot - UFO4P Components Patch.esp</Include>
+      <Match NoRecurse="true" Path="optional">*UFO4P*.esp</Match>
     </ZipFile>
   </ZipFiles>
 </PapyrusProject>
