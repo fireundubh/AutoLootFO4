@@ -166,8 +166,16 @@ Function TryLootObject(ObjectReference AObject)
   EndIf
 EndFunction
 
-Bool Function PlayerCanPickLock()
+Bool Function PlayerCanPickAdvancedLocks()
   Return PlayerRef.HasPerk(Locksmith[0]) || PlayerRef.HasPerk(Locksmith[1]) || PlayerRef.HasPerk(Locksmith[2]) || PlayerRef.HasPerk(Locksmith[3])
+EndFunction
+
+Bool Function PlayerCanPickExpertLocks()
+  Return PlayerRef.HasPerk(Locksmith[1]) || PlayerRef.HasPerk(Locksmith[2]) || PlayerRef.HasPerk(Locksmith[3])
+EndFunction
+
+Bool Function PlayerCanPickMasterLocks()
+  Return PlayerRef.HasPerk(Locksmith[2]) || PlayerRef.HasPerk(Locksmith[3])
 EndFunction
 
 Bool Function TryToUnlockForXP(ObjectReference AContainer)
@@ -176,15 +184,15 @@ Bool Function TryToUnlockForXP(ObjectReference AContainer)
 
   If iLockDifficulty < 50
     iXPReward = Game.GetGameSettingFloat("fLockpickXPRewardEasy") as Int ; 5 Base XP
-  ElseIf iLockDifficulty >= 50 && iLockDifficulty < 75
+  ElseIf (iLockDifficulty >= 50 && iLockDifficulty < 75) && PlayerCanPickAdvancedLocks()
     iXPReward = Game.GetGameSettingFloat("fLockpickXPRewardAverage") as Int ; 10 Base XP
-  ElseIf iLockDifficulty >= 75 && iLockDifficulty < 100
+  ElseIf (iLockDifficulty >= 75 && iLockDifficulty < 100) && PlayerCanPickExpertLocks()
     iXPReward = Game.GetGameSettingFloat("fLockpickXPRewardHard") as Int ; 15 Base XP
-  ElseIf iLockDifficulty >= 100
+  ElseIf (iLockDifficulty >= 100) && PlayerCanPickMasterLocks()
     iXPReward = Game.GetGameSettingFloat("fLockpickXPRewardVeryHard") as Int ; 20 Base XP
   EndIf
 
-  If iLockDifficulty < 50 || PlayerCanPickLock()
+  If iXPReward > 0
     AContainer.Unlock(False)
     Game.RewardPlayerXP(iXPReward, False)
 
