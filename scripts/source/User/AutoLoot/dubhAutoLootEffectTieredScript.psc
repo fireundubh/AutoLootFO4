@@ -166,7 +166,6 @@ EndGroup
 
 Group Globals
   GlobalVariable[] Property Filter_Globals Auto Mandatory
-  GlobalVariable Property Destination Auto Mandatory
   GlobalVariable Property Delay Auto Mandatory
   GlobalVariable Property Radius Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_AllowStealing Auto Mandatory

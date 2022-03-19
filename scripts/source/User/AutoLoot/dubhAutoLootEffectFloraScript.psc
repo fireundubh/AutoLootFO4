@@ -201,7 +201,6 @@ Group Forms
 EndGroup
 
 Group Globals
-  GlobalVariable Property Destination Auto Mandatory
   GlobalVariable Property Delay Auto Mandatory
   GlobalVariable Property Radius Auto Mandatory
   GlobalVariable Property AutoLoot_Setting_AllowStealing Auto Mandatory
