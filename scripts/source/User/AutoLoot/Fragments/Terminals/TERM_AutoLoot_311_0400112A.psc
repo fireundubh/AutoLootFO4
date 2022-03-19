@@ -71,7 +71,7 @@ EndFunction
 Function Fragment_Terminal_07(ObjectReference akTerminalRef)
 ;BEGIN CODE
 ; ---------------------------------------------------------------------
-; [ITXT]		Component Scrap (disabled)
+; [ITXT]		Scrap (disabled)
 ; ---------------------------------------------------------------------
 AutoLoot_Globals_Valuables[3].SetValue(1)
 ;END CODE
@@ -82,9 +82,31 @@ EndFunction
 Function Fragment_Terminal_08(ObjectReference akTerminalRef)
 ;BEGIN CODE
 ; ---------------------------------------------------------------------
-; [ITXT]		Component Scrap (enabled)
+; [ITXT]		Scrap (enabled)
 ; ---------------------------------------------------------------------
 AutoLoot_Globals_Valuables[3].SetValue(0)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_Terminal_09
+Function Fragment_Terminal_09(ObjectReference akTerminalRef)
+;BEGIN CODE
+; ---------------------------------------------------------------------
+; [ITXT]		Components (disabled)
+; ---------------------------------------------------------------------
+AutoLoot_Globals_Valuables[4].SetValue(1)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_Terminal_10
+Function Fragment_Terminal_10(ObjectReference akTerminalRef)
+;BEGIN CODE
+; ---------------------------------------------------------------------
+; [ITXT]		Components (enabled)
+; ---------------------------------------------------------------------
+AutoLoot_Globals_Valuables[4].SetValue(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
