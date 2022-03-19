@@ -82,7 +82,7 @@ Function BuildAndProcessReferences(FormList[] AFilter)
       While (j < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled() && CanPlayerLootInCombat()
         ObjectReference Item = Loot[j] as ObjectReference
 
-        If Item && (Item.GetContainer() == None) && ItemCanBeProcessed(Item)
+        If Item && ItemCanBeProcessed(Item)
           TryLootObject(Item)
         EndIf
 
