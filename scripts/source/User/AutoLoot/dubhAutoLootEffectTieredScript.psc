@@ -20,16 +20,27 @@ Event OnTimer(Int aiTimerID)
       bLootSettlements   = IntToBool(AutoLoot_Setting_LootSettlements)
       bStealingIsHostile = IntToBool(AutoLoot_Setting_StealingIsHostile)
 
-      Int i = 0
+      If IntToBool(Filter_Globals[0])
+        BuildAndProcessReferences(Filter[0])
+      EndIf
 
-      While (i < Filter_Globals.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled() && CanPlayerLootInCombat()
+      If IntToBool(Filter_Globals[1])
+        BuildAndProcessReferences(Filter[1])
+      EndIf
 
-        If IntToBool(Filter_Globals[i])
-          BuildAndProcessReferences(Filter[i])
-        EndIf
+      If IntToBool(Filter_Globals[2])
+        BuildAndProcessReferences(Filter[2])
+      EndIf
 
-        i += 1
-      EndWhile
+      ; Scrap
+      If IntToBool(Filter_Globals[3])
+        BuildAndProcessReferences(Filter[3])
+      EndIf
+
+      ; Components
+      If IntToBool(Filter_Globals[4])
+        BuildAndProcessReferences(Filter[4])
+      EndIf
     EndIf
 
     StartTimer(Delay.GetValue() as Int, TimerID)
@@ -80,15 +91,23 @@ Bool Function ItemCanBeProcessed(ObjectReference AObject)
 EndFunction
 
 Function BuildAndProcessReferences(FormList AFilter)
-  ObjectReference[] Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
+  ObjectReference[] Loot = None
+
+  If !IntToBool(Filter_Globals[4])
+    Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
+  Else
+    Loot = PlayerRef.FindAllReferencesOfType(Junk, Radius.GetValue())
+  EndIf
 
   Int i = 0
 
   While (i < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled() && CanPlayerLootInCombat()
     ObjectReference Item = Loot[i] as ObjectReference
 
-    If Item && (Item.GetContainer() == None) && ItemCanBeProcessed(Item)
-      TryLootObject(Item)
+    If Item && ItemCanBeProcessed(Item)
+      If !IntToBool(Filter_Globals[4]) || IntToBool(Filter_Globals[4]) && HasObjectComponents(Item, AFilter)
+        TryLootObject(Item)
+      EndIf
     EndIf
 
     i += 1
@@ -139,6 +158,22 @@ Bool Function CanPlayerLootInCombat()
   Return True
 EndFunction
 
+Bool Function HasObjectComponents(ObjectReference AObject, FormList AComponents)
+  Int i = 0
+
+  While i < AComponents.GetSize()
+    Component Item = AComponents.GetAt(i) as Component
+
+    If (AObject.GetBaseObject() as MiscObject).GetObjectComponentCount(Item) > 0
+      Return True
+    EndIf
+
+    i += 1
+  EndWhile
+
+  Return False
+EndFunction
+
 ; -----------------------------------------------------------------------------
 ; VARIABLES
 ; -----------------------------------------------------------------------------
@@ -162,6 +197,7 @@ Group Forms
   FormList[] Property Filter Auto Mandatory
   FormList Property Locations Auto Mandatory
   FormList Property QuestItems Auto Mandatory
+  FormList Property Junk Auto Mandatory
 EndGroup
 
 Group Globals
