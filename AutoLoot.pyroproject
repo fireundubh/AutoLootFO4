@@ -11,7 +11,7 @@
   Zip="true">
   <Variables>
     <Variable Name="Namespace" Value="AutoLoot"/>
-    <Variable Name="Version" Value="1_2_9_3"/>
+    <Variable Name="Version" Value="1_2_9_4"/>
     <Variable Name="ModName" Value="Auto Loot"/>
     <Variable Name="ModsPath" Value="G:\ModOrganizer\Games\Fallout4\mods"/>
     <Variable Name="OutputPath" Value="@ModsPath\@ModName"/>
@@ -30,7 +30,8 @@
     <Script>@Namespace\dubhAutoLootEffectContainersScript.psc</Script>
     <Script>@Namespace\dubhAutoLootEffectFloraScript.psc</Script>
     <Script>@Namespace\dubhAutoLootEffectScript.psc</Script>
-    <Script>@Namespace\dubhAutoLootEffectTieredScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootEffectValuablesScript.psc</Script>
+    <Script>@Namespace\dubhAutoLootEffectWeaponsScript.psc</Script>
     <Script>@Namespace\dubhAutoLootQuestScript.psc</Script>
     <Script>@Namespace\dubhAutoLootNoDisintegrateScript.psc</Script>
   </Scripts>

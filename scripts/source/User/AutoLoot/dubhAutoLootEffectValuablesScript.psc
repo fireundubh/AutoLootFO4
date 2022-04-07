@@ -1,4 +1,4 @@
-ScriptName AutoLoot:dubhAutoLootEffectTieredScript Extends ActiveMagicEffect
+ScriptName AutoLoot:dubhAutoLootEffectValuablesScript Extends ActiveMagicEffect
 
 Import AutoLoot:dubhAutoLootUtilityScript
 
