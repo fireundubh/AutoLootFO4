@@ -39,7 +39,7 @@ Event OnTimer(Int aiTimerID)
 
       ; Components
       If IntToBool(Filter_Globals[4])
-        BuildAndProcessReferences(Filter[4])
+        BuildAndProcessReferencesForComponents(Filter[4])
       EndIf
     EndIf
 
@@ -93,11 +93,7 @@ EndFunction
 Function BuildAndProcessReferences(FormList AFilter)
   ObjectReference[] Loot = None
 
-  If !IntToBool(Filter_Globals[4])
-    Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
-  Else
-    Loot = PlayerRef.FindAllReferencesOfType(Junk, Radius.GetValue())
-  EndIf
+  Loot = PlayerRef.FindAllReferencesOfType(AFilter, Radius.GetValue())
 
   Int i = 0
 
@@ -105,9 +101,25 @@ Function BuildAndProcessReferences(FormList AFilter)
     ObjectReference Item = Loot[i] as ObjectReference
 
     If Item && ItemCanBeProcessed(Item)
-      If !IntToBool(Filter_Globals[4]) || IntToBool(Filter_Globals[4]) && HasObjectComponents(Item, AFilter)
-        TryLootObject(Item)
-      EndIf
+      TryLootObject(Item)
+    EndIf
+
+    i += 1
+  EndWhile
+EndFunction
+
+Function BuildAndProcessReferencesForComponents(FormList AFilter)
+  ObjectReference[] Loot = None
+
+  Loot = PlayerRef.FindAllReferencesOfType(Junk, Radius.GetValue())
+
+  Int i = 0
+
+  While (i < Loot.Length) && PlayerRef.HasPerk(ActivePerk) && IsPlayerControlled() && CanPlayerLootInCombat()
+    ObjectReference Item = Loot[i] as ObjectReference
+
+    If Item && ItemCanBeProcessed(Item) && HasObjectComponents(Item, AFilter)
+      TryLootObject(Item)
     EndIf
 
     i += 1
