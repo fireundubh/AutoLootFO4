@@ -70,3 +70,21 @@ Function LootObjectByFormList(GlobalVariable[] AGlobals, FormList[] AFilter, Obj
     i += 1
   EndWhile
 EndFunction
+
+Int Function CountItems(ObjectReference AObject, FormList AExclusions) Global
+  Int TotalItemCount = AObject.GetItemCount(None)
+
+  If TotalItemCount == 0
+    Return TotalItemCount
+  EndIf
+
+  Int NumExclusionsFound = AObject.GetItemCount(AExclusions)
+
+  TotalItemCount -= NumExclusionsFound
+
+  If TotalItemCount <= 0
+    Return 0
+  EndIf
+
+  Return TotalItemCount
+EndFunction
