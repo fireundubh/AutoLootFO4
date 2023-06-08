@@ -11,7 +11,7 @@
   Zip="true">
   <Variables>
     <Variable Name="Namespace" Value="AutoLoot"/>
-    <Variable Name="Version" Value="1_2_9_5"/>
+    <Variable Name="Version" Value="1_2_9_6"/>
     <Variable Name="ModName" Value="Auto Loot"/>
     <Variable Name="ModsPath" Value="G:\ModOrganizer\Games\Fallout4\mods"/>
     <Variable Name="OutputPath" Value="@ModsPath\@ModName"/>
